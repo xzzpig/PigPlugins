@@ -12,12 +12,14 @@ public class SSListener implements Listener {
 	public void onGetExp(PlayerExpChangeEvent event){
 		Player player = event.getPlayer();
 		int amount = event.getAmount();
+		event.setAmount(0);
 		int level = player.getLevel();
 		int levelmaxexp = TPlayer.toLevelExp(level);
 		if(Main.levelexp.containsKey(level))
 			levelmaxexp = Main.levelexp.get(level);
 		int exptolevel = levelmaxexp - (int)player.getExp()*levelmaxexp;
 		if(amount>=exptolevel){
+			Debuger.print("LevelUp!");
 			level=level+1;
 			player.setLevel(level);
 			amount=amount-exptolevel;
@@ -25,7 +27,9 @@ public class SSListener implements Listener {
 			if(Main.levelexp.containsKey(level))
 				levelmaxexp = Main.levelexp.get(level);
 		}
-		player.setExp((player.getExp()*(float)levelmaxexp+(float)amount)/((float)levelmaxexp));
-		Debuger.print("Exp:+"+amount+"|"+(int)(levelmaxexp*player.getExp())+"/"+levelmaxexp+"("+(int)(player.getExp()*100)+"%)");
+		int exp = (int) (player.getExp()*levelmaxexp);
+		float pexp = (float)(exp+amount)/((float)levelmaxexp);
+		player.setExp(pexp);
+		Debuger.print("Exp:+"+amount+"|"+"Lv"+level+":"+(exp+amount)+"/"+levelmaxexp+"("+(int)(pexp*100)+"%)");
 	}
 }
