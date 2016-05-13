@@ -42,6 +42,7 @@ public class Main extends JavaPlugin {
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
 		onDisable();onEnable();
+		sender.sendMessage("[SetServer]已重载");
 		return true;
 	}
 }
