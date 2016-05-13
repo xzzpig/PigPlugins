@@ -11,7 +11,8 @@ import com.github.xzzpig.pigapi.bukkit.TConfig;
 
 public class Main extends JavaPlugin {
 	public static HashMap<Integer, Integer> levelexp = new HashMap<Integer, Integer>();
-	public static boolean debug;		
+	public static boolean debug;
+	private boolean firstload = true;
 	@Override
 	public void onEnable() {
 		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
@@ -28,7 +29,10 @@ public class Main extends JavaPlugin {
 				Debuger.print("Lv"+i+"="+exp+"Exp");
 			}
 		}
-		getServer().getPluginManager().registerEvents(new SSListener(),this);
+		if(firstload){
+			getServer().getPluginManager().registerEvents(new SSListener(),this);
+			firstload = false;
+		}
 	}
 
 	// 插件停用函数
