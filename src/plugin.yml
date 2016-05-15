@@ -1,9 +1,9 @@
-name: SetServer
-main: com.github.xzzpig.setserver.Main
+name: ExamplePlugin
+main: com.github.xzzpig.example.Main
 version: V0.1
 author: xzzpig
 commands:
-  setserver:
-    description: 重载SetServer
-    usage: /ss
-    aliases: [ss,ssr]
+  example: 
+    description: null
+    usage: /example
+    aliases: [eexample]
