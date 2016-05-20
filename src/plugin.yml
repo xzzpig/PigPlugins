@@ -1,9 +1,9 @@
-name: ExamplePlugin
-main: com.github.xzzpig.example.Main
+name: ExpBank
+main: com.github.xzzpig.expbank.Main
 version: V0.1
 author: xzzpig
 commands:
-  example: 
-    description: null
-    usage: /example
-    aliases: [eexample]
+  expbank: 
+    description: ExpBank的主命令
+    usage: /eb help
+    aliases: [eb,expb,exb]
