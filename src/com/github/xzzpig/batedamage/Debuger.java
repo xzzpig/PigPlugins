@@ -1,18 +1,16 @@
-
-package com.github.xzzpig.example;
+package com.github.xzzpig.batedamage;
 
 import org.bukkit.entity.Player;
 
 import com.github.xzzpig.pigapi.bukkit.TPlayer;
 
-
 public class Debuger {
 	public static long time;
 
 	public static boolean debug;
-	
+
 	public static void print(Object s) {
-		if (debug== false)
+		if (debug == false)
 			return;
 		System.out.println("\n****************\n" + s + "\n****************");
 		for (Player p : TPlayer.getAllPlayers()) {

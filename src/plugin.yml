@@ -1,9 +1,13 @@
-name: ExamplePlugin
-main: com.github.xzzpig.example.Main
+name: BateDamage
+main: com.github.xzzpig.batedamage.Main
 version: V0.1
 author: xzzpig
 commands:
-  example: 
-    description: null
-    usage: /example
-    aliases: [eexample]
+  batedamage: 
+    description: BateDamage主命令
+    usage: /bade help -查看帮助
+    aliases: [bade]
+permission: 
+  batedamage.admin: 
+    description: 本插件的管理权限
+    default: op
