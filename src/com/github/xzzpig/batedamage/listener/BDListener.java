@@ -36,7 +36,7 @@ public class BDListener implements Listener {
 		Main.buildPermission();
 
 	}
-
+	
 	@EventHandler
 	public void onPlayerDeath(EntityDeathEvent event) {
 		if (!(event.getEntity() instanceof Player))
@@ -44,7 +44,7 @@ public class BDListener implements Listener {
 		Player player = (Player) event.getEntity();
 		long account = data.getLong(player.getName());
 		data.set(player.getName(),
-				Main.get2x(Main.accountToBate(account) - 1) - 2);
+				Main.beatToaccount(Main.accountToBate(account)) - 2);
 		TConfig.saveConfig("BateDamage", data, "data.yml");
 		Main.buildPermisiom(player);
 	}

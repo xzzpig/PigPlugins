@@ -20,12 +20,44 @@ public class Main extends JavaPlugin {
 	public static HashMap<Integer, List<String>> permissions = new HashMap<Integer, List<String>>();
 
 	public static TData perdata = new TData();
+	
+	public static Class<AcountBeatCalculate> CalculateClass = null;
 
 	public static long accountToBate(long account) {
+		if(CalculateClass!=null){
+			try {
+				Object cal = CalculateClass.newInstance();
+				if(cal instanceof AcountBeatCalculate){
+					return ((AcountBeatCalculate) cal).accountToBate(account);					
+				}
+			} catch (InstantiationException | IllegalAccessException e) {
+				Debuger.print(e);
+			}			
+		}
 		long i = 0;
-		while (get2x(i) - 2 < account)
-			i++;
+		if(account<=1023)
+			while(get2x(i)-2<account)
+				i++;
+		else
+			i= (account-1023)/1024+11;
 		return i;
+	}
+	public static long beatToaccount(long bate){
+		if(CalculateClass!=null){
+			try {
+				Object cal = CalculateClass.newInstance();
+				if(cal instanceof AcountBeatCalculate){
+					return ((AcountBeatCalculate) cal).beatToaccount(bate);					
+				}
+			} catch (InstantiationException | IllegalAccessException e) {
+				Debuger.print(e);
+			}			
+		}
+		if(bate<11)
+			return get2x(bate)-2;
+		else {
+			return (bate-9)*1024-2;
+		}
 	}
 
 	public static void buildPermisiom(Player player) {
@@ -108,7 +140,7 @@ public class Main extends JavaPlugin {
 					sender.sendMessage("[BateDamage]控制台不可省略参数 <目标>");
 					return true;
 				}
-			BDListener.data.set(player, get2x(bate) - 2);
+			BDListener.data.set(player,beatToaccount(bate));
 			TConfig.saveConfig("BateDamage", BDListener.data, "data.yml");
 			sender.sendMessage("[BateDamage]" + player + "的战力已设置为" + bate);
 			buildPermission();
@@ -133,8 +165,8 @@ public class Main extends JavaPlugin {
 				}
 			BDListener.data
 					.set(player,
-							get2x(accountToBate(BDListener.data.getLong(player))
-									+ bate) - 2);
+							beatToaccount(accountToBate(BDListener.data.getLong(player))
+									+ bate));
 			TConfig.saveConfig("BateDamage", BDListener.data, "data.yml");
 			sender.sendMessage("[BateDamage]" + player + "的战力已增加" + bate);
 			buildPermission();
@@ -157,8 +189,8 @@ public class Main extends JavaPlugin {
 					sender.sendMessage("[BateDamage]控制台不可省略参数 <目标>");
 					return true;
 				}
-			long ac = get2x(accountToBate(BDListener.data.getLong(player))
-					- bate) - 2;
+			long ac = beatToaccount(accountToBate(BDListener.data.getLong(player))
+					- bate);
 			if (ac < 0)
 				ac = 0;
 			BDListener.data.set(player, ac);
@@ -175,7 +207,9 @@ public class Main extends JavaPlugin {
 				sender.sendMessage("[BateDamage]控制台不可省略参数 <目标>");
 				return true;
 			}
-			sender.sendMessage("[BateDamage]" + target + "的战力为" + accountToBate(BDListener.data.getLong(target))+"(杀敌数:"+BDListener.data.getLong(target)+")");
+			long account = BDListener.data.getLong(target);
+			long bate = accountToBate(account);
+			sender.sendMessage("[BateDamage]" + target + "的战力为" +bate+"(杀敌数:"+account+"|距下级:"+(beatToaccount(bate+1)-account)+")");
 			return true;
 		}
 		return false;
