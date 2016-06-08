@@ -7,7 +7,7 @@
 			<attribute name="javadoc_location" value="https://jd.bukkit.org"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="/PigAPI_Bukkit/bin" sourcepath="/PigAPI_Bukkit/src"/>
-	<classpathentry exported="true" kind="lib" path="/PigAPI/bin" sourcepath="/PigAPI/src"/>
+	<classpathentry kind="lib" path="/PigAPI_Bukkit/bin" sourcepath="/PigAPI_Bukkit/src"/>
+	<classpathentry kind="lib" path="/PigAPI/bin" sourcepath="/PigAPI/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

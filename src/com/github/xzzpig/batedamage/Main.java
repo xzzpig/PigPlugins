@@ -15,48 +15,50 @@ import com.github.xzzpig.batedamage.listener.BDListener;
 import com.github.xzzpig.pigapi.TData;
 import com.github.xzzpig.pigapi.bukkit.TCommandHelp;
 import com.github.xzzpig.pigapi.bukkit.TConfig;
+import com.github.xzzpig.pigapi.bukkit.TPrefix;
 
 public class Main extends JavaPlugin {
 	public static HashMap<Integer, List<String>> permissions = new HashMap<Integer, List<String>>();
 
 	public static TData perdata = new TData();
-	
+
 	public static Class<AcountBeatCalculate> CalculateClass = null;
 
 	public static long accountToBate(long account) {
-		if(CalculateClass!=null){
+		if (CalculateClass != null) {
 			try {
 				Object cal = CalculateClass.newInstance();
-				if(cal instanceof AcountBeatCalculate){
-					return ((AcountBeatCalculate) cal).accountToBate(account);					
+				if (cal instanceof AcountBeatCalculate) {
+					return ((AcountBeatCalculate) cal).accountToBate(account);
 				}
 			} catch (InstantiationException | IllegalAccessException e) {
 				Debuger.print(e);
-			}			
+			}
 		}
 		long i = 0;
-		if(account<=1023)
-			while(get2x(i)-2<account)
+		if (account <= 1023)
+			while (get2x(i) - 2 < account)
 				i++;
 		else
-			i= (account-1023)/1024+11;
+			i = (account - 1023) / 1024 + 11;
 		return i;
 	}
-	public static long beatToaccount(long bate){
-		if(CalculateClass!=null){
+
+	public static long beatToaccount(long bate) {
+		if (CalculateClass != null) {
 			try {
 				Object cal = CalculateClass.newInstance();
-				if(cal instanceof AcountBeatCalculate){
-					return ((AcountBeatCalculate) cal).beatToaccount(bate);					
+				if (cal instanceof AcountBeatCalculate) {
+					return ((AcountBeatCalculate) cal).beatToaccount(bate);
 				}
 			} catch (InstantiationException | IllegalAccessException e) {
 				Debuger.print(e);
-			}			
+			}
 		}
-		if(bate<11)
-			return get2x(bate)-2;
+		if (bate < 11)
+			return get2x(bate) - 2;
 		else {
-			return (bate-9)*1024-2;
+			return (bate - 9) * 1024 - 2;
 		}
 	}
 
@@ -76,6 +78,7 @@ public class Main extends JavaPlugin {
 			}
 		}
 		perdata.setObject(player.getName(), pers);
+		updatePrefix(player);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -100,6 +103,19 @@ public class Main extends JavaPlugin {
 		}
 		perdata.getObjects().clear();
 
+	}
+
+	public static void updatePrefix(final Player player) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				TPrefix.setPrefix(
+						player.getName(),
+						"[戰力:"
+								+ accountToBate(BDListener.data.getLong(player
+										.getName())) + "]", "BateDamage");
+			}
+		}).start();
 	}
 
 	@Override
@@ -140,10 +156,11 @@ public class Main extends JavaPlugin {
 					sender.sendMessage("[BateDamage]控制台不可省略参数 <目标>");
 					return true;
 				}
-			BDListener.data.set(player,beatToaccount(bate));
+			BDListener.data.set(player, beatToaccount(bate));
 			TConfig.saveConfig("BateDamage", BDListener.data, "data.yml");
 			sender.sendMessage("[BateDamage]" + player + "的战力已设置为" + bate);
 			buildPermission();
+
 			return true;
 		} else if (arg0.equalsIgnoreCase("add")) {
 			long bate;
@@ -165,11 +182,12 @@ public class Main extends JavaPlugin {
 				}
 			BDListener.data
 					.set(player,
-							beatToaccount(accountToBate(BDListener.data.getLong(player))
-									+ bate));
+							beatToaccount(accountToBate(BDListener.data
+									.getLong(player)) + bate));
 			TConfig.saveConfig("BateDamage", BDListener.data, "data.yml");
 			sender.sendMessage("[BateDamage]" + player + "的战力已增加" + bate);
 			buildPermission();
+
 			return true;
 		} else if (arg0.equalsIgnoreCase("remove")) {
 			long bate;
@@ -189,27 +207,29 @@ public class Main extends JavaPlugin {
 					sender.sendMessage("[BateDamage]控制台不可省略参数 <目标>");
 					return true;
 				}
-			long ac = beatToaccount(accountToBate(BDListener.data.getLong(player))
-					- bate);
+			long ac = beatToaccount(accountToBate(BDListener.data
+					.getLong(player)) - bate);
 			if (ac < 0)
 				ac = 0;
 			BDListener.data.set(player, ac);
 			TConfig.saveConfig("BateDamage", BDListener.data, "data.yml");
 			sender.sendMessage("[BateDamage]" + player + "的战力已减少" + bate);
 			buildPermission();
+
 			return true;
-		}
-		else if (arg0.equalsIgnoreCase("get")) {
+		} else if (arg0.equalsIgnoreCase("get")) {
 			String target = sender.getName();
-			if(args.length>1)
+			if (args.length > 1)
 				target = args[1];
-			else if(!(sender instanceof Player)){
+			else if (!(sender instanceof Player)) {
 				sender.sendMessage("[BateDamage]控制台不可省略参数 <目标>");
 				return true;
 			}
 			long account = BDListener.data.getLong(target);
 			long bate = accountToBate(account);
-			sender.sendMessage("[BateDamage]" + target + "的战力为" +bate+"(杀敌数:"+account+"|距下级:"+(beatToaccount(bate+1)-account)+")");
+			sender.sendMessage("[BateDamage]" + target + "的战力为" + bate
+					+ "(杀敌数:" + account + "|距下级:"
+					+ (beatToaccount(bate + 1) - account) + ")");
 			return true;
 		}
 		return false;
@@ -237,6 +257,8 @@ public class Main extends JavaPlugin {
 		} catch (Exception e) {
 		}
 		getServer().getPluginManager().registerEvents(new BDListener(), this);
+		com.github.xzzpig.pigapi.plugin.Main.self.enableChatManager();
+		getLogger().info("已强制启动PigAPI_ChatManager");
 	}
 
 	@Override
