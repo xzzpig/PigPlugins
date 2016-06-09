@@ -1,9 +1,10 @@
-name: ExamplePlugin
-main: com.github.xzzpig.example.Main
+name: PrefixManager
+main: com.github.xzzpig.prefixmanager.Main
 version: V0.1
 author: xzzpig
+depend: [PigAPI]
 commands:
-  example: 
-    description: null
-    usage: /example
-    aliases: [eexample]
+  prefixmanager: 
+    description: PrefixManager的主命令
+    usage: /pm help
+    aliases: [pm]

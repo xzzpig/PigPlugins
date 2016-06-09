@@ -1,0 +1,6 @@
+prefixmanager: 
+  group: 
+    example: '&6[Example]&r'
+    example2: '&6[</world/>]&r'
+  world: 
+    world: '&2[World]&r'
