@@ -1,9 +1,12 @@
-name: ExamplePlugin
+name: Example
 main: com.github.xzzpig.example.Main
 version: V0.1
 author: xzzpig
+depend:
+- PigAPI
 commands:
-  example: 
-    description: null
-    usage: /example
-    aliases: [eexample]
+  expprotect: 
+    description: ExpProtect的主命令
+    usage: /ep help
+    aliases:
+    - ep
