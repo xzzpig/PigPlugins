@@ -5,8 +5,8 @@ author: xzzpig
 depend:
 - PigAPI
 commands:
-  expprotect: 
-    description: ExpProtect的主命令
+  example: 
+    description: Example的主命令
     usage: /ep help
     aliases:
     - ep

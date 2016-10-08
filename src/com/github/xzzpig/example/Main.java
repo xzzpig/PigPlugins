@@ -4,11 +4,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.xzzpig.pigapi.PigData;
 import com.github.xzzpig.pigapi.bukkit.TCommandHelp;
 
 public class Main extends JavaPlugin {
-	public static PigData data;
 	
 	@Override
 	public void onEnable() {
@@ -31,7 +29,7 @@ public class Main extends JavaPlugin {
 		if (arg0.equalsIgnoreCase("help")) {
 			if (arg0.equalsIgnoreCase("help")) {
 				for(TCommandHelp sub:Help.Example.getSubCommandHelps()){
-					sub.getHelpMessage("ExpProtect").send(sender);
+					sub.getHelpMessage("Example").send(sender);
 				}
 				return true;
 			}
