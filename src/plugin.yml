@@ -1,12 +1,12 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: CreativeInWorld
+main: com.github.xzzpig.ciw.Main
 version: V0.1
 author: xzzpig
 depend:
 - PigAPI
 commands:
-  expprotect: 
-    description: ExpProtect的主命令
-    usage: /ep help
+  CreativeInWorld:
+    description: CreativeInWorld的主命令
+    usage: /ciw help
     aliases:
-    - ep
+    - ciw
