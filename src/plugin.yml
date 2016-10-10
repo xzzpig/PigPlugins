@@ -1,12 +1,16 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: PigServerManager
+main: com.github.xzzpig.psm.Main
 version: V0.1
 author: xzzpig
 depend:
 - PigAPI
 commands:
-  example: 
-    description: Example的主命令
-    usage: /ep help
+  PigServerManager: 
+    description: PigServerManager的主命令
+    usage: /psm help 查看帮助
     aliases:
-    - ep
+    - psm
+permissions:
+  pigservermanager.admin:
+    description: PigServerManager的所有权限
+    default: op

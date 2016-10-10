@@ -1,0 +1,5 @@
+PigServerManager: 
+  debug: false
+  port: 10727
+  console_only: true
+  max_log_size: 100
