@@ -1,5 +1,5 @@
 
-package com.github.xzzpig.example;
+package com.github.xzzpig.lord;
 
 import org.bukkit.entity.Player;
 

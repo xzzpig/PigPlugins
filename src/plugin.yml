@@ -1,12 +1,35 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: Lord
+main: com.github.xzzpig.lord.Main
 version: V0.1
 author: xzzpig
 depend:
 - PigAPI
 commands:
-  example: 
-    description: Example的主命令
-    usage: /ep help
-    aliases:
-    - ep
+  lord:
+    description: Lord的主命令
+    usage: /lord help
+permission:
+  lord.*:
+    description: Lord的所有权限
+    default: op
+    children:
+      lord.admin.*: true
+  lord.admin.*:
+    description: Lord的管理员权限
+    default: op
+    children:
+      lord.default.*: true
+      lord.admin.command.*: true
+  lord.defalut.*:
+    description: Lord的普通权限
+    default: op
+  lord.admin.command.*:
+    description: Lord的管理员命令权限
+    default: op
+    children:
+      lord.admin.command.notice: true
+  lord.admin.command.notice:
+    description: Lord notice的命令权限
+    default: op
+    children:
+      lord.admin.*: true

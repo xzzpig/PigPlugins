@@ -1,0 +1,8 @@
+Lord:
+  Notice:
+    time: 60
+    command_times: 16
+    command_delay: 0
+    content:
+    - 公告事例1
+    - 公告事例2
