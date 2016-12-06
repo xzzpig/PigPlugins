@@ -8,8 +8,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class Config {
 
 	public static ConfigurationSection Lord, Lord_Notice;
-	public static int Lord_Notice_time, Lord_Notice_command_times,Lord_Notice_command_delay;
 	public static List<String> Lord_Notice_content;
+	public static int Lord_Notice_time, Lord_Notice_command_times,Lord_Notice_command_delay;
 
 	public static void read(FileConfiguration config) {
 		Lord = config.getConfigurationSection("Lord");

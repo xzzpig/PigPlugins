@@ -7,9 +7,9 @@ import com.github.xzzpig.pigapi.bukkit.TPlayer;
 
 
 public class Debuger {
-	public static long time;
-
 	public static boolean debug;
+
+	public static long time;
 	
 	public static void print(Object s) {
 		if (debug== false)

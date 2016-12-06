@@ -10,45 +10,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.xzzpig.lord.equip.EquipAPIListener;
+import com.github.xzzpig.lord.equip.Equipment;
 import com.github.xzzpig.pigapi.bukkit.TCommandHelp;
 import com.github.xzzpig.pigapi.bukkit.TConfig;
 import com.github.xzzpig.pigapi.bukkit.TMessage;
+import com.github.xzzpig.pigapi.event.Event;
 
 public class Main extends JavaPlugin {
 	private static int notice_index, notice_size;
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onEnable() {
-		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
-		saveDefaultConfig();
-		Vars.config = TConfig.getConfigFile(getName(), "config.yml");
-		Config.read(Vars.config);
-		notice_size = Config.Lord_Notice_content.size();
-		if (notice_size != 0)
-			Bukkit.getScheduler().runTaskTimer(this, () -> {
-				String content = "";
-				try {
-					if (notice_index == notice_size)
-						notice_index = 0;
-					content = Config.Lord_Notice_content.get(notice_index);
-					notice_index++;
-					content = new String(content.getBytes(), "UTF-8");
-				} catch (UnsupportedEncodingException e1) {
-					e1.printStackTrace();
-				}
-				TMessage message = TMessage.getBy(content, true);
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					message.send(p);
-				}
-			}, 0, Config.Lord_Notice_time * 20);
-	}
-
-	// 插件停用函数
-	@Override
-	public void onDisable() {
-		getLogger().info(getName() + "插件已被停用 ");
-	}
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -94,6 +64,41 @@ public class Main extends JavaPlugin {
 			return true;
 		}
 		return false;
+	}
+
+	// 插件停用函数
+	@Override
+	public void onDisable() {
+		getLogger().info(getName() + "插件已被停用 ");
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onEnable() {
+		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
+		saveDefaultConfig();
+		Vars.config = TConfig.getConfigFile(getName(), "config.yml");
+		Config.read(Vars.config);
+		notice_size = Config.Lord_Notice_content.size();
+		if (notice_size != 0)
+			Bukkit.getScheduler().runTaskTimer(this, () -> {
+				String content = "";
+				try {
+					if (notice_index == notice_size)
+						notice_index = 0;
+					content = Config.Lord_Notice_content.get(notice_index);
+					notice_index++;
+					content = new String(content.getBytes(), "UTF-8");
+				} catch (UnsupportedEncodingException e1) {
+					e1.printStackTrace();
+				}
+				TMessage message = TMessage.getBy(content, true);
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					message.send(p);
+				}
+			}, 0, Config.Lord_Notice_time * 20);
+		Event.registListener(EquipAPIListener.instance);
+		Equipment.loadConfig();
 	}
 
 	@Override

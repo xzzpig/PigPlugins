@@ -7,9 +7,110 @@ Lord:
     - 公告事例1
     - 公告事例2
   shop:
-　　 Example:
-　　   EID: 1
-　　   Price: 0
-　　   Permission: null
-　　   Exp: 0
-　　   Honor: 0
+    Example:
+      EID: 1
+      Price: 0
+      Permission: null
+      Exp: 0
+      Honor: 0
+  Player: 
+    Zhiye:
+      ZhiyeList:
+        - A
+      A: 
+        name: "人族"
+        id: 1
+        default: true
+        chance: 100
+        permission: []
+        attribute:
+          Damage_p: 1
+          Damage_m: 1
+          Armor_p: 0.8
+          Armor_m: 0.8
+          Health: 8
+          Hunger: 2
+          Speed: 100
+          LifeSteal: 0
+          Evasion: 1
+          Critical:
+            prob: 1
+            damage_p: 1
+            damage_m: 1
+  Equipment:
+    EquipList:
+    - A
+    DefaultLore: [
+      ]
+    A:
+      name: 大保健
+      id: 0
+      item: 276
+      power:
+        Damage_p: 1
+        Damage_m: 1
+        Armor_p: 0.8
+        Armor_m: 0.8
+        Health: 0
+        Hunger: 2
+        LifeSteal: 10
+        Evasion: 100
+        Critical:
+          damage_p: 1
+          damage_m: 1
+          prob: 5
+        Repel:
+          level: 1
+          preb: 5
+        Fire:
+          time: 60
+          prob: 50
+        Skill:
+          Fireball:
+            prob: 100
+            cool: 0
+            damage_m: 0
+          Ice:
+            prob: 100
+            cool: 0
+            damage_m: 0
+          Lightning:
+            prob: 1
+            cool: 300
+          Teleport:
+            distance: 10
+            prob: 100
+            cool: 10
+          Arrow:
+            prob: 100
+            cool: 2
+            damage_p: 0
+        Potion:
+          hold:
+            Regeneration:
+              level: 1
+              prob: 10
+              time: 60
+          it:
+            Wither:
+              level: 1
+              prob: 50
+              time: 60
+          me:
+            Nausea:
+              level: 1
+              prob: 10
+              time: 60
+        Command_t:
+        - fly
+        Command_f:
+        - heal
+        Consume: true
+      limit:
+        Level: 10
+        Permission:
+        - essentials.fly
+        Zhiye: 1
+        Type: 近战武器
+      lore:
+      - 腐竹的大保健

@@ -6,8 +6,12 @@ import java.util.List;
 import com.github.xzzpig.lord.Vars;
 
 public class Shop {
-	public String name, permission;
+	public static List<String> getShopList() {
+		return new ArrayList<>(Vars.config.getConfigurationSection("Lord.shop").getKeys(false));
+	}
 	public int eid, price, exp, honor;
+
+	public String name, permission;
 
 	public Shop(String name) {
 		this.name = name;
@@ -16,9 +20,5 @@ public class Shop {
 		permission = Vars.config.getString("Lord.shop." + name + ".Permission");
 		exp = Vars.config.getInt("Lord.shop." + name + ".Exp", 0);
 		honor = Vars.config.getInt("Lord.shop." + name + ".Honor", 0);
-	}
-
-	public static List<String> getShopList() {
-		return new ArrayList<>(Vars.config.getConfigurationSection("Lord.shop").getKeys(false));
 	}
 }
