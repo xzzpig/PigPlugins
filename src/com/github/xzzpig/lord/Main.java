@@ -12,6 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.xzzpig.lord.equip.EquipAPIListener;
 import com.github.xzzpig.lord.equip.Equipment;
+import com.github.xzzpig.lord.player.PlayerInfoListener;
+import com.github.xzzpig.lord.zhiye.ZhiyeBukkitListener;
 import com.github.xzzpig.pigapi.bukkit.TCommandHelp;
 import com.github.xzzpig.pigapi.bukkit.TConfig;
 import com.github.xzzpig.pigapi.bukkit.TMessage;
@@ -98,6 +100,8 @@ public class Main extends JavaPlugin {
 				}
 			}, 0, Config.Lord_Notice_time * 20);
 		Event.registListener(EquipAPIListener.instance);
+		Bukkit.getPluginManager().registerEvents(ZhiyeBukkitListener.instance, this);
+		Bukkit.getPluginManager().registerEvents(PlayerInfoListener.instance, this);
 		Equipment.loadConfig();
 	}
 
