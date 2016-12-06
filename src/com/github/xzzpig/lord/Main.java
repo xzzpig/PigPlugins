@@ -22,7 +22,8 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
 		saveDefaultConfig();
-		Config.read(TConfig.getConfigFile(getName(), "config.yml"));
+		Vars.config = TConfig.getConfigFile(getName(), "config.yml");
+		Config.read(Vars.config);
 		notice_size = Config.Lord_Notice_content.size();
 		if (notice_size != 0)
 			Bukkit.getScheduler().runTaskTimer(this, () -> {

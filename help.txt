@@ -1,0 +1,110 @@
+Lord插件：
+插件版本：1.7.10
+插件内容：
+①插件基础功能与前置插件介绍
+②玩家系统
+③玩家装备系统
+④装备制作系统
+⑤lore系统
+⑥NPC系统
+⑦各大特殊系统以及面板
+【玩家权限是玩家默认拥有的权限】
+
+
+详细内容：
+①插件基础功能与前置插件介绍：
+公告功能：
+  命令类:
+     (发布一个临时(聊天栏刷屏)公告）
+     /Lord notice 内容(支持颜色符号&、支持中文)
+  配置类:
+     (公告配置事例(支持颜色符号&、支持中文)）
+Lord:
+  Notice:
+    time: 60 [自动发送间隔(单位秒)]
+    command_times: 16 [命令发送次数]
+    command_delay: 0 [命令每次发送间隔(单位毫秒)]
+    content:
+    - 公告事例1
+    - 公告事例2
+
+玩家聊天名字格式：(在PigAPI中设置)
+
+玩家没加入阵营则默认显示自由人,
+阵营名字请看②玩家系统_阵营系统
+玩家类型的请看②玩家系统_VIP系统
+
+商店功能:
+命令部分：
+帮助指令：【玩家权限Lord.shop.help】
+/Lord shop help
+打开商店：【玩家权限Lord.shop.open】
+/Lord shop open <商店名称(这里用Example)> <玩家名字(不输入默认为自己打开)>
+打开商店：【管理员权限Lord.shop.open.player】
+/Lord shop open <商店名称(这里用Example)> <玩家名字(不输入默认为自己打开)>
+配置部分（例子）：
+Lord:
+  shop:
+　　Example:
+　　  EID: 1(装备制作系统中装备的代号)
+　　  Price: 100(价格,玩家系统_金币系统,可以不输入)
+　　  Permission: essentials.fly(拥有某项权限才能购买(不输入默认不需要权限))
+　　  Exp: 1000(购买需要的经验,可以不输入)
+　　  Honor: 500(购买需要的荣誉点,玩家系统_荣誉系统,可以不输入)
+
+
+
+交易系统:
+交易系统帮助：【玩家权限Lord.market.help】
+/Lord market help
+
+打开交易市场:【玩家权限Lord.market.open】
+/Lord market open
+
+上架物品:(不可以不输入,必填,可填0)【玩家权限Lord.market.create】
+手中拿着要上架的商品输入：
+/Lord market create <Price> <exp>
+
+购买物品:
+交易市场面板Shift键+左键一下
+
+下架物品：
+交易市场面板
+上架物品本人Shift键+右键一下
+
+市场邮箱：【玩家权限Lord.market.mail】
+购买的东西和下架的东西都会到这
+/Lord market mail
+
+
+
+②玩家系统：
+
+
+
+权限:
+permission:
+  lord.*:
+    description: Lord的所有权限
+    default: op
+    children:
+      lord.admin.*: true
+  lord.admin.*:
+    description: Lord的管理员权限
+    default: op
+    children:
+      lord.default.*: true
+      lord.admin.command.*: true
+  lord.defalut.*:
+    description: Lord的普通权限
+    default: op
+  lord.admin.command.*:
+    description: Lord的管理员命令权限
+    default: op
+    children:
+      lord.admin.command.notice: true
+  lord.admin.command.notice:
+    description: Lord notice的命令权限
+    default: op
+    children:
+      lord.admin.*: true

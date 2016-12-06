@@ -6,3 +6,10 @@ Lord:
     content:
     - 公告事例1
     - 公告事例2
+  shop:
+　　 Example:
+　　   EID: 1
+　　   Price: 0
+　　   Permission: null
+　　   Exp: 0
+　　   Honor: 0
