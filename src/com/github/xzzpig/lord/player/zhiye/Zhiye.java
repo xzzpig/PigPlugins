@@ -229,7 +229,7 @@ public class Zhiye {
 	}
 
 	public static void loadConfig() {
-		ConfigurationSection zhiye = Vars.config.getConfigurationSection("Lord.Zhiye");
+		ConfigurationSection zhiye = Vars.config.getConfigurationSection("Lord.Player.Zhiye");
 		List<String> zylist = zhiye.getStringList("ZhiyeList");
 		zhiyelist = new ArrayList<>();
 		for (String zy : zylist) {

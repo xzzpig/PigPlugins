@@ -20,7 +20,7 @@ public class PlayerInfoListener implements Listener {
 			return;
 		Player player = (Player) event.getEntity();
 		double damage = event.getFinalDamage();
-		if (event.getEntity() instanceof Player) {
+		if (event.getDamager() instanceof Player) {
 			Player damager = (Player) event.getDamager();
 			PlayerInfo damagerinfo = PlayerInfo.getBy(damager.getName());
 			damage += damagerinfo.getDamage_P();

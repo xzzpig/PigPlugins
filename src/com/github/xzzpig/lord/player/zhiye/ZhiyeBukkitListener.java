@@ -89,14 +89,16 @@ public class ZhiyeBukkitListener implements Listener{
 		}
 	}
 	
+	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		PlayerInfo info = PlayerInfo.getBy(player.getName());
 		String zhiye = info.getZhiye();
 		if (zhiye==null||zhiye.equalsIgnoreCase("NONE")) {
 			zhiye = Zhiye.getRandomDefaultZhiye().getName();
-			Vars.playerStaticInfo.set(player.getName()+"zhiye",zhiye);
+			Vars.playerStaticInfo.set(player.getName()+".zhiye",zhiye);
 			player.sendMessage("[Lord]你的随机选取职业为:"+zhiye);
 		}
+		info.fresh();
 	}
 }

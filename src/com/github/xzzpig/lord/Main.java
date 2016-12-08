@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.xzzpig.lord.equip.EquipAPIListener;
 import com.github.xzzpig.lord.equip.Equipment;
 import com.github.xzzpig.lord.player.PlayerInfoListener;
+import com.github.xzzpig.lord.player.zhiye.Zhiye;
 import com.github.xzzpig.lord.player.zhiye.ZhiyeBukkitListener;
 import com.github.xzzpig.pigapi.bukkit.TCommandHelp;
 import com.github.xzzpig.pigapi.bukkit.TConfig;
@@ -107,6 +108,7 @@ public class Main extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(ZhiyeBukkitListener.instance, this);
 		Bukkit.getPluginManager().registerEvents(PlayerInfoListener.instance, this);
 		Equipment.loadConfig();
+		Zhiye.loadConfig();
 	}
 
 	@Override
