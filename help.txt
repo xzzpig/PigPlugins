@@ -1,340 +1,340 @@
-Lord插件：
-插件版本：1.7.10
-插件内容：
-①插件基础功能与前置插件介绍
-②玩家系统
-③其他特殊系统
-【玩家权限】是玩家默认拥有的权限
-
-
-制作前提：
-/reload一定要做好，还有权限组一定要区分好
-
-详细内容：
-①插件基础功能与前置插件介绍：
-公告功能：
-  命令类:
-     (发布一个临时(聊天栏刷屏)公告）
-     /Lord notice 内容(支持颜色符号&、支持中文)
-  配置类:
-     (公告配置事例(支持颜色符号&、支持中文)）
-Lord:
-  Notice:
-    time: 60 [自动发送间隔(单位秒)]
-    command_times: 16 [命令发送次数]
-    command_delay: 0 [命令每次发送间隔(单位毫秒)]
-    content:
-    - 公告事例1
-    - 公告事例2
-
-玩家聊天名字格式：(在PigAPI中设置)
-
-玩家职业请看②玩家系统_职业系统
-玩家类型的请看②玩家系统_VIP系统
-
-商店功能:
-命令部分：
-帮助指令：【玩家权限Lord.shop.help】
-/Lord shop help
-打开商店：【玩家权限Lord.shop.open】
-/Lord shop open <商店名称(这里用Example)> <玩家名字(不输入默认为自己打开)>
-打开商店：【管理员权限Lord.shop.open.player】
-/Lord shop open <商店名称(这里用Example)> <玩家名字(不输入默认为自己打开)>
-配置部分（例子）：
-Lord:
-  shop:
-　　1:(商店代号)
-　　  Equipment: 1(装备制作系统中装备的代号)
-　　  Price: 100(该装备价格,玩家系统_金币系统,可以不输入)
-　　  Jurisdiction: essentials.fly(拥有某项权限才能购买(不输入默认不需要权限))
-　　  Exp: 1000(购买需要的经验,可以不输入)
-　　  Honor: 500(购买需要的荣誉点,玩家系统_荣誉系统,可以不输入)
-
-
-
-交易系统:
-交易系统帮助：【玩家权限Lord.market.help】
-/Lord market help
-
-打开交易市场:【玩家权限Lord.market.open】
-/Lord market open
-
-上架物品:(不可以不输入,必填,可填0)【玩家权限Lord.market.create】
-手中拿着要上架的商品输入：
-/Lord market create <Price> <exp>
-
-购买物品:
-交易市场面板Shift键+左键一下
-
-下架物品：
-交易市场面板
-上架物品本人Shift键+右键一下
-
-市场邮箱：【玩家权限Lord.market.mail】
-购买的东西和下架的东西都会到这
-/Lord market mail
-
-
-
-②玩家系统：
-[I]玩家基础属性系统介绍：
-玩家的攻击输出是先天属性乘以等级+后天属性+装备属性
-玩家的基础属性：物攻、魔攻、防御、魔防、生命、饥饿、等其他属性
-
-
-先天属性:指的是会随等级变化的属性
-后天属性:是指其他方式增长的属性
-限时属性:是指玩家攻击输出被限时属性影响
-
-
-
-属性名称—看职业系统介绍
-命令：
-增加属性值(后天)【管理员权限Lord.player.up.set】
-(例子)/Lord player up set damage_w 50 
-增加50点物攻
-
-(例子2)/Lord player up set damage_w -50 
-增加 -50点物攻(即减少50点物攻)
-
-清空属性值(后天)【管理员权限Lord.player.up.reload】
-(例子)/Lord player up reload <player>
-
-
-[II]职业系统：
-命令：
-设置职业【管理员权限Lord.player.zhiye.set】
-/Lord player zhiye set <职业代号> <player(不输入默认自己)>
-
-配置文件(例子)：
-Lord:
-  Player: 
-    Zhiye:
-      ZhiyeList:
-        - A
-      A: 
-        name: "人族"
-        id: 1
-        default: true
-        chance: 100
-        permission: []
-        attribute:
-          Damage_p: 1
-          Damage_m: 1
-          Armor_p: 0.8
-          Armor_m: 0.8
-          Health: 8
-          Hunger: 2
-          Speed: 100
-          LifeSteal: 0
-          Evasion: 1
-          Critical:
-            prob: 1
-            damage_p: 1
-            damage_m: 1
-
-
-
-
-[III]装备制作系统
-命令:
-给装备:【管理员权限Lord.player.equipment.give】
-/Lord player ep give <装备代号> <player(不输入默认自己)>
-配置文件(例子)：
-Lord:
-  Equipment:
-    EquipList:(装备的配置项名称)
-    - A
-    DefaultLore:
-      - "&a>>>>装备能力"
-      - "&e·该装备的攻击力为<Damage_w>" (这种直接读数值)
-      - "&e·该装备的闪避率为<Evasion>" (这种读出数值再加%) 
-      - "&e·该装备的药水效果有"
-      - "&6  - <Potion>"(这种:使用方式_药水中文名_药水等级_概率%(没有就100%))
-      - "&e·该装备的触发命令有"
-      - "&6  - <Command>"(这种:命令_无视或不无视权限,多种触发用/分开)
-      - "&e·该装备的使用技能有"
-      - "&6  - <Skill>"(这种:读出技能名称_概率%_冷却时间(s))
-      - "&4>>>>使用要求"
-      - "&e职业要求:<zhiye>"(这种:读出职业显示名称)
-      - "&e使用方式:
-      - "&e其他权限要求："
-      - "&6  - <Jurisdiction>"(这种:读出权限名称,多种要求用/分开)
-    A:
-      Name: 大保健
-      ID: 1 (物品的标志ID,不可重复)
-      Item: 276
-      power:
-        Damage_w: 1
-        Damage_m: 1
-        Armor_w: 0.8
-        Armor_m: 0.8
-        Health: 0
-        Hunger: 2
-        LifeSteal: 10
-        Evasion: 100|閃避率
-        Critical:|暴擊
-          damage_w: 1
-          damage_m: 1
-          prob: 5
-        Repel:|擊退
-          level: 1
-          preb: 5
-        Fire:
-          time: 60
-          prob: 50
-        Skill:
-          Fireball:
-            prob: 100
-            cool: 0
-            damage_m: 0
-          Ice:
-            prob: 100
-            cool: 0
-            damage_m: 0
-          Lightning:
-            prob: 1
-            cool: 300
-          Teleport:
-            distance: 10
-            prob: 100
-            cool: 10
-          Arrow:
-            prob: 100
-            cool: 2
-            damage_w: 0
-        Potion:
-          hold:
-            Regeneration:
-              level: 1
-              prob: 10
-              time: 60
-          it:
-            Wither:
-              level: 1
-              prob: 50
-              time: 60
-          me:
-            Nausea:
-              level: 1
-              prob: 10
-              time: 60
-        Command_t:
-        - fly
-        Command_f:
-        - heal
-        Consume: true
-      limit:
-        Level: 10
-        Permission:
-        - essentials.fly
-        Zhiye: 1
-        Type: 近战武器
-      Lore:
-      - 腐竹的大保健
-
-这里是可选的药水效果
-speed（加速）, slow（减速）, fast_digging（加速挖掘）, slow_digging（缓慢挖掘）, increase_damage（伤害提升）, heal（治疗）, harm（伤害）, jump（跳跃）, confusion（反胃）, regeneration（反胃）, damage_resistance（抗性）, fire_resistance（抗火）, water_breathing（水下呼吸）, invisibility（隐身）, blindness（失明）, night_vision（夜视）, hunger（饥饿）, weakness（虚弱）, poison（中毒）, wither（凋零）
-
-
-[IV]特殊装备栏
-说明:
-特殊装备栏只有两行(也就是最多九种，超过不显示)
-第一行是说明可放入的类型
-第二行是用来放入装备和判断
-判断方式：在玩家放入特殊装备栏后就会判断，如果不是则放回背包空格位置，没位置则丢出
-
-命令:
-打开特殊装备栏【玩家权限Lord.player.bag.me】【管理员权限Lord.player.bag.player】
-/Lord player bag
-/Lord player bag <player(不输入默认自己，玩家不可以打开别人的)>
-
-配置文件(例子):
-Lord:
-  player:
-　　Bag:
-　　  1:(这里指在装备栏的格子位置)
-        type: "近战武器" (可放入的装备的装备类型) 
-      2:
-        Type: "副手武器"
-
-[V]VIP系统
-命令:
-设置VIP【管理员权限Lord.player.vip.set】
-/Lord player vip set <VIP代号> <天数(-1为永久)> <player(不输入默认自己)>
-
-配置文件(例子)：
-Lord:
-  player:
-　　VIP:
-　　  1:(VIP代号)
-　　    Name: "青铜VIP" (VIP显示名称)
-　　    Commands: "" (VIP的权限组)
-　　
-　　
-　　
-　　
-[VI]金币系统:
-命令:
-击杀任何生物都会得到金币，范围是1-30
-获得金币(包括命令)或消耗金币会提醒获得/消耗的金币数量，以及金币总数量
-查询金币【玩家权限Lord.player.Price.list】
-/Lord player Price list <player(不输入默认自己)>
-
-金币排行榜【玩家权限Lord.player.Price.listing】
-/Lord player Price listing
-
-增加金币【管理员权限Lord.player.Price.add】
-/Lord player Price add <数量> <player(不输入默认自己)>
-
-减少金币【管理员权限Lord.player.Price.del】
-/Lord player Price del <数量> <player(不输入默认自己)>
-
-[VII]荣耀系统:
-获得荣耀(包括命令)或消耗荣耀会提醒获得/消耗的荣耀数量，以及荣耀总数量
-查询荣耀【玩家权限Lord.player.Price.list】
-/Lord player Honor list <player(不输入默认自己)>
-
-荣耀排行榜【玩家权限Lord.player.Price.listing】
-/Lord player Honor listing
-
-增加荣耀【管理员权限Lord.player.Price.add】
-/Lord player Honor add <数量> <player(不输入默认自己)>
-
-减少荣耀【管理员权限Lord.player.Price.del】
-/Lord player Honor del <数量> <player(不输入默认自己)>
-
-
-
-③特殊系统
-
-
-
-
-
-权限:
-permission:
-  lord.*:
-    description: Lord的所有权限
-    default: op
-    children:
-      lord.admin.*: true
-  lord.admin.*:
-    description: Lord的管理员权限
-    default: op
-    children:
-      lord.default.*: true
-      lord.admin.command.*: true
-  lord.defalut.*:
-    description: Lord的普通权限
-    default: op
-  lord.admin.command.*:
-    description: Lord的管理员命令权限
-    default: op
-    children:
-      lord.admin.command.notice: true
-  lord.admin.command.notice:
-    description: Lord notice的命令权限
-    default: op
-    children:
-      lord.admin.*: true
+	Lord插件：
+	插件版本：1.7.10
+	插件内容：
+	①插件基础功能与前置插件介绍
+	②玩家系统
+	③其他特殊系统
+	【玩家权限】是玩家默认拥有的权限
+	
+	
+	制作前提：
+	/reload一定要做好，还有权限组一定要区分好
+	
+	详细内容：
+	①插件基础功能与前置插件介绍：
+	公告功能：
+√	  命令类:
+√	     (发布一个临时(聊天栏刷屏)公告）
+√	     /Lord notice 内容(支持颜色符号&、支持中文)
+√	  配置类:
+√	     (公告配置事例(支持颜色符号&、支持中文)）
+√	Lord:
+√	  Notice:
+√	    time: 60 [自动发送间隔(单位秒)]
+√	    command_times: 16 [命令发送次数]
+√	    command_delay: 0 [命令每次发送间隔(单位毫秒)]
+√	    content:
+√	    - 公告事例1
+√	    - 公告事例2
+	
+√	玩家聊天名字格式：(在PigAPI中设置)
+	
+	玩家职业请看②玩家系统_职业系统
+	玩家类型的请看②玩家系统_VIP系统
+	
+	商店功能:
+	命令部分：
+	帮助指令：【玩家权限Lord.shop.help】
+	/Lord shop help
+	打开商店：【玩家权限Lord.shop.open】
+	/Lord shop open <商店名称(这里用Example)> <玩家名字(不输入默认为自己打开)>
+	打开商店：【管理员权限Lord.shop.open.player】
+	/Lord shop open <商店名称(这里用Example)> <玩家名字(不输入默认为自己打开)>
+	配置部分（例子）：
+	Lord:
+	  shop:
+	    1:(商店代号)
+	      Equipment: 1(装备制作系统中装备的代号)
+	      Price: 100(该装备价格,玩家系统_金币系统,可以不输入)
+	      Permission: essentials.fly(拥有某项权限才能购买(不输入默认不需要权限))
+	      Exp: 1000(购买需要的经验,可以不输入)
+	      Honor: 500(购买需要的荣誉点,玩家系统_荣誉系统,可以不输入)
+	
+	
+	
+	交易系统:
+	交易系统帮助：【玩家权限Lord.market.help】
+	/Lord market help
+	
+	打开交易市场:【玩家权限Lord.market.open】
+	/Lord market open
+	
+	上架物品:(不可以不输入,必填,可填0)【玩家权限Lord.market.create】
+	手中拿着要上架的商品输入：
+	/Lord market create <Price> <exp>
+	
+	购买物品:
+	交易市场面板Shift键+左键一下
+	
+	下架物品：
+	交易市场面板
+	上架物品本人Shift键+右键一下
+	
+	市场邮箱：【玩家权限Lord.market.mail】
+	购买的东西和下架的东西都会到这
+	/Lord market mail
+	
+	
+	
+	②玩家系统：
+	[I]玩家基础属性系统介绍：
+	玩家的攻击输出是先天属性乘以等级+后天属性+装备属性
+	玩家的基础属性：物攻、魔攻、防御、魔防、生命、饥饿、等其他属性
+	
+	
+	先天属性:指的是会随等级变化的属性
+	后天属性:是指其他方式增长的属性
+	限时属性:是指玩家攻击输出被限时属性影响
+	
+	
+	
+	属性名称—看职业系统介绍
+	命令：
+	增加属性值(后天)【管理员权限Lord.player.up.set】
+	(例子)/Lord player up set damage_w 50 
+	增加50点物攻
+	
+	(例子2)/Lord player up set damage_w -50 
+	增加 -50点物攻(即减少50点物攻)
+	
+	清空属性值(后天)【管理员权限Lord.player.up.reload】
+	(例子)/Lord player up reload <player>
+	
+	
+	[II]职业系统：
+	命令：
+	设置职业【管理员权限Lord.player.zhiye.set】
+	/Lord player zhiye set <职业代号> <player(不输入默认自己)>
+	
+	配置文件(例子)：
+	Lord:
+	  Player: 
+	    Zhiye:
+	      ZhiyeList:
+	        - A
+	      A: 
+√	        name: "人族"
+√	        id: 1
+√	        default: true
+√	        chance: 100
+	        permission: []
+	        attribute:
+√	          Damage_p: 1
+	          Damage_m: 0
+√	          Armor_p: 0
+	          Armor_m: 0
+√	          Health: 20
+√	          MP: 0
+√	          Speed: 10 |範圍:[0,100]
+√	          LifeSteal: 0
+√	          Evasion: 0
+	          Critical:
+√	            prob: 0
+√	            damage_p: 0
+	            damage_m: 0
+	
+	
+	
+	
+	[III]装备制作系统
+	命令:
+	给装备:【管理员权限Lord.player.equipment.give】
+	/Lord player ep give <装备代号> <player(不输入默认自己)>
+	配置文件(例子)：
+	Lord:
+	  Equipment:
+	    EquipList:(装备的配置项名称)
+	    - A
+	    DefaultLore:
+	      - "&a>>>>装备能力"
+	      - "&e·该装备的攻击力为<Damage_w>" (这种直接读数值)
+	      - "&e·该装备的闪避率为<Evasion>" (这种读出数值再加%) 
+	      - "&e·该装备的药水效果有"
+	      - "&6  - <Potion>"(这种:使用方式_药水中文名_药水等级_概率%(没有就100%))
+	      - "&e·该装备的触发命令有"
+	      - "&6  - <Command>"(这种:命令_无视或不无视权限,多种触发用/分开)
+	      - "&e·该装备的使用技能有"
+	      - "&6  - <Skill>"(这种:读出技能名称_概率%_冷却时间(s))
+	      - "&4>>>>使用要求"
+	      - "&e职业要求:<zhiye>"(这种:读出职业显示名称)
+	      - "&e使用方式:
+	      - "&e其他权限要求："
+	      - "&6  - <Jurisdiction>"(这种:读出权限名称,多种要求用/分开)
+	    A:
+	      Name: 大保健
+	      ID: 1 (物品的标志ID,不可重复)
+	      Item: 276
+	      power:
+	        Damage_w: 1
+	        Damage_m: 1
+	        Armor_w: 0.8
+	        Armor_m: 0.8
+	        Health: 0
+	        Hunger: 2
+	        LifeSteal: 10
+	        Evasion: 100|閃避率
+	        Critical:|暴擊
+	          damage_w: 1
+	          damage_m: 1
+	          prob: 5
+	        Repel:|擊退
+	          level: 1
+	          preb: 5
+	        Fire:
+	          time: 60
+	          prob: 50
+	        Skill:
+	          Fireball:
+	            prob: 100
+	            cool: 0
+	            damage_m: 0
+	          Ice:
+	            prob: 100
+	            cool: 0
+	            damage_m: 0
+	          Lightning:
+	            prob: 1
+	            cool: 300
+	          Teleport:
+	            distance: 10
+	            prob: 100
+	            cool: 10
+	          Arrow:
+	            prob: 100
+	            cool: 2
+	            damage_w: 0
+	        Potion:
+	          hold:
+	            Regeneration:
+	              level: 1
+	              prob: 10
+	              time: 60
+	          it:
+	            Wither:
+	              level: 1
+	              prob: 50
+	              time: 60
+	          me:
+	            Nausea:
+	              level: 1
+	              prob: 10
+	              time: 60
+	        Command_t:
+	        - fly
+	        Command_f:
+	        - heal
+	        Consume: true
+	      limit:
+	        Level: 10
+	        Permission:
+	        - essentials.fly
+	        Zhiye: 1
+	        Type: 近战武器
+	      Lore:
+	      - 腐竹的大保健
+	
+	这里是可选的药水效果
+	speed（加速）, slow（减速）, fast_digging（加速挖掘）, slow_digging（缓慢挖掘）, increase_damage（伤害提升）, heal（治疗）, harm（伤害）, jump（跳跃）, confusion（反胃）, regeneration（反胃）, damage_resistance（抗性）, fire_resistance（抗火）, water_breathing（水下呼吸）, invisibility（隐身）, blindness（失明）, night_vision（夜视）, hunger（饥饿）, weakness（虚弱）, poison（中毒）, wither（凋零）
+	
+	
+	[IV]特殊装备栏
+	说明:
+	特殊装备栏只有两行(也就是最多九种，超过不显示)
+	第一行是说明可放入的类型
+	第二行是用来放入装备和判断
+	判断方式：在玩家放入特殊装备栏后就会判断，如果不是则放回背包空格位置，没位置则丢出
+	
+	命令:
+	打开特殊装备栏【玩家权限Lord.player.bag.me】【管理员权限Lord.player.bag.player】
+	/Lord player bag
+	/Lord player bag <player(不输入默认自己，玩家不可以打开别人的)>
+	
+	配置文件(例子):
+	Lord:
+	  player:
+	　　Bag:
+	　　  1:(这里指在装备栏的格子位置)
+	        type: "近战武器" (可放入的装备的装备类型) 
+	      2:
+	        Type: "副手武器"
+	
+	[V]VIP系统
+	命令:
+	设置VIP【管理员权限Lord.player.vip.set】
+	/Lord player vip set <VIP代号> <天数(-1为永久)> <player(不输入默认自己)>
+	
+	配置文件(例子)：
+	Lord:
+	  player:
+	　　VIP:
+	　　  1:(VIP代号)
+	　　    Name: "青铜VIP" (VIP显示名称)
+	　　    Commands: "" (VIP的权限组)
+	　　
+	　　
+	　　
+	　　
+	[VI]金币系统:
+	命令:
+	击杀任何生物都会得到金币，范围是1-30
+	获得金币(包括命令)或消耗金币会提醒获得/消耗的金币数量，以及金币总数量
+	查询金币【玩家权限Lord.player.Price.list】
+	/Lord player Price list <player(不输入默认自己)>
+	
+	金币排行榜【玩家权限Lord.player.Price.listing】
+	/Lord player Price listing
+	
+	增加金币【管理员权限Lord.player.Price.add】
+	/Lord player Price add <数量> <player(不输入默认自己)>
+	
+	减少金币【管理员权限Lord.player.Price.del】
+	/Lord player Price del <数量> <player(不输入默认自己)>
+	
+	[VII]荣耀系统:
+	获得荣耀(包括命令)或消耗荣耀会提醒获得/消耗的荣耀数量，以及荣耀总数量
+	查询荣耀【玩家权限Lord.player.Price.list】
+	/Lord player Honor list <player(不输入默认自己)>
+	
+	荣耀排行榜【玩家权限Lord.player.Price.listing】
+	/Lord player Honor listing
+	
+	增加荣耀【管理员权限Lord.player.Price.add】
+	/Lord player Honor add <数量> <player(不输入默认自己)>
+	
+	减少荣耀【管理员权限Lord.player.Price.del】
+	/Lord player Honor del <数量> <player(不输入默认自己)>
+	
+	
+	
+	③特殊系统
+	
+	
+	
+	
+	
+	权限:
+	permission:
+	  lord.*:
+	    description: Lord的所有权限
+	    default: op
+	    children:
+	      lord.admin.*: true
+	  lord.admin.*:
+	    description: Lord的管理员权限
+	    default: op
+	    children:
+	      lord.default.*: true
+	      lord.admin.command.*: true
+	  lord.defalut.*:
+	    description: Lord的普通权限
+	    default: op
+	  lord.admin.command.*:
+	    description: Lord的管理员命令权限
+	    default: op
+	    children:
+	      lord.admin.command.notice: true
+	  lord.admin.command.notice:
+	    description: Lord notice的命令权限
+	    default: op
+	    children:
+	      lord.admin.*: true

@@ -6,14 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class PlayerInfo implements IPlayerInfo {
 
 	private static List<PlayerInfo> instances;
-
-	private PlayerInfo(String name) {
-		this.name = name;
-	}
 
 	public static PlayerInfo getBy(String name) {
 		if (instances == null) {
@@ -29,8 +26,17 @@ public class PlayerInfo implements IPlayerInfo {
 
 	private String name;
 
-	public String getName() {
-		return name;
+	private PlayerInfo(String name) {
+		this.name = name;
+	}
+
+	@SuppressWarnings("deprecation")
+	public void fresh(){
+		Player player = Bukkit.getPlayer(getName());
+		player.setMaxHealth(getMaxHealth());
+		float speed = getSpeed();
+		speed = speed>0?speed:0;
+		player.setWalkSpeed(speed/100);
 	}
 
 	@Override
@@ -48,7 +54,7 @@ public class PlayerInfo implements IPlayerInfo {
 		}
 		return r;
 	}
-
+	
 	@Override
 	public double getArmor_P() {
 		double r = 0;
@@ -150,9 +156,9 @@ public class PlayerInfo implements IPlayerInfo {
 	}
 
 	@Override
-	public double getHunger() {
+	public double getMaxMP() {
 		double r = 0;
-		String command = "hunger";
+		String command = "maxmp";
 		Map<String, Object> data = new HashMap<>();
 		data.put("command", command);
 		data.put("info", this);
@@ -213,6 +219,14 @@ public class PlayerInfo implements IPlayerInfo {
 		return r;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public String getPlayerName(){
+		return name;
+	}
+
 	@Override
 	public int getSpeed() {
 		int r = 0;
@@ -228,7 +242,7 @@ public class PlayerInfo implements IPlayerInfo {
 		}
 		return r;
 	}
-
+	
 	@Override
 	public String getZhiye() {
 		String r = null;

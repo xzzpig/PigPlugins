@@ -2,6 +2,7 @@ package com.github.xzzpig.lord;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.xzzpig.lord.equip.EquipAPIListener;
 import com.github.xzzpig.lord.equip.Equipment;
 import com.github.xzzpig.lord.player.PlayerInfoListener;
-import com.github.xzzpig.lord.zhiye.ZhiyeBukkitListener;
+import com.github.xzzpig.lord.player.zhiye.ZhiyeBukkitListener;
 import com.github.xzzpig.pigapi.bukkit.TCommandHelp;
 import com.github.xzzpig.pigapi.bukkit.TConfig;
 import com.github.xzzpig.pigapi.bukkit.TMessage;
@@ -71,6 +72,7 @@ public class Main extends JavaPlugin {
 	// 插件停用函数
 	@Override
 	public void onDisable() {
+		TConfig.saveConfig(getName(), Vars.playerStaticInfo, "playerstaticinfo.yml");
 		getLogger().info(getName() + "插件已被停用 ");
 	}
 
@@ -80,6 +82,8 @@ public class Main extends JavaPlugin {
 		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
 		saveDefaultConfig();
 		Vars.config = TConfig.getConfigFile(getName(), "config.yml");
+		Vars.playerStaticInfo = TConfig.getConfigFile(getName(), "playerstaticinfo.yml");
+		Vars.random = new Random();
 		Config.read(Vars.config);
 		notice_size = Config.Lord_Notice_content.size();
 		if (notice_size != 0)

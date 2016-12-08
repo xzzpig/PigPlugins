@@ -10,7 +10,7 @@ public interface IPlayerInfo {
 	public double getDamage_P();
 	public double getEvasion();
 	public double getHealth();
-	public double getHunger();
+	public double getMaxMP();
 	public int getLevel();
 	public double getLifeSteal();
 	public double getMaxHealth();

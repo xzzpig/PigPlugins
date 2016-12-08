@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.xzzpig.lord.Vars;
+import com.github.xzzpig.lord.equip.Equipment;
 
 public class Shop {
 	public static List<String> getShopList() {
@@ -20,5 +21,9 @@ public class Shop {
 		permission = Vars.config.getString("Lord.shop." + name + ".Permission");
 		exp = Vars.config.getInt("Lord.shop." + name + ".Exp", 0);
 		honor = Vars.config.getInt("Lord.shop." + name + ".Honor", 0);
+	}
+	
+	public Equipment getEquipment(){
+		return Equipment.getBy(eid);
 	}
 }

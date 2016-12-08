@@ -25,18 +25,18 @@ Lord:
         permission: []
         attribute:
           Damage_p: 1
-          Damage_m: 1
-          Armor_p: 0.8
-          Armor_m: 0.8
-          Health: 8
-          Hunger: 2
-          Speed: 100
+          Damage_m: 0
+          Armor_p: 0
+          Armor_m: 0
+          Health: 20
+          MP: 0
+          Speed: 10
           LifeSteal: 0
-          Evasion: 1
+          Evasion: 0
           Critical:
-            prob: 1
-            damage_p: 1
-            damage_m: 1
+            prob: 0
+            damage_p: 0
+            damage_m: 0
   Equipment:
     EquipList:
     - A

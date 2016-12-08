@@ -1,12 +1,16 @@
-package com.github.xzzpig.lord.zhiye;
+package com.github.xzzpig.lord.player.zhiye;
 
 import java.util.Map;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
+import com.github.xzzpig.lord.Vars;
 import com.github.xzzpig.lord.player.IPlayerInfo;
+import com.github.xzzpig.lord.player.PlayerInfo;
 import com.github.xzzpig.lord.player.PlayerInfoFormatEvent;
 
 public class ZhiyeBukkitListener implements Listener{
@@ -34,34 +38,42 @@ public class ZhiyeBukkitListener implements Listener{
 			d = (double) data.get("result");
 			d+=zhiye.getAttribute().getArmor_P();
 			data.put("result",d);
+			break;
 		case "damage_m":
 			d = (double) data.get("result");
 			d+=zhiye.getAttribute().getDamage_M();
 			data.put("result",d);
+			break;
 		case "damage_p":
 			d = (double) data.get("result");
 			d+=zhiye.getAttribute().getDamage_P();
 			data.put("result",d);
+			break;
 		case "evasion":
 			d = (double) data.get("result");
 			d+=zhiye.getAttribute().getEvasion();
 			data.put("result",d);
-		case "hunger":
+			break;
+		case "maxmp":
 			d = (double) data.get("result");
-			d+=zhiye.getAttribute().getHunger();
+			d+=zhiye.getAttribute().getMaxMP();
 			data.put("result",d);
+			break;
 		case "lifesteal":
 			d = (double) data.get("result");
 			d+=zhiye.getAttribute().getLifeSteal();
 			data.put("result",d);
+			break;
 		case "maxhealth":
 			d = (double) data.get("result");
 			d+=zhiye.getAttribute().getMaxHealth();
 			data.put("result",d);
+			break;
 		case "speed":
 			i = (int) data.get("result");
 			i+=zhiye.getAttribute().getSpeed();
 			data.put("result",i);
+			break;
 		case "critical":
 			Map<String,Integer> 
 			map = (Map<String, Integer>) data.get("result"),
@@ -73,6 +85,18 @@ public class ZhiyeBukkitListener implements Listener{
 			map.put("prob", prob);
 			map.put("damage_p", damage_p);
 			map.put("damage_m", damage_m);
+			break;
+		}
+	}
+	
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		PlayerInfo info = PlayerInfo.getBy(player.getName());
+		String zhiye = info.getZhiye();
+		if (zhiye==null||zhiye.equalsIgnoreCase("NONE")) {
+			zhiye = Zhiye.getRandomDefaultZhiye().getName();
+			Vars.playerStaticInfo.set(player.getName()+"zhiye",zhiye);
+			player.sendMessage("[Lord]你的随机选取职业为:"+zhiye);
 		}
 	}
 }

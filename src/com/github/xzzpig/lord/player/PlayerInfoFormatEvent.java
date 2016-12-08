@@ -8,9 +8,13 @@ import org.bukkit.event.HandlerList;
 
 public class PlayerInfoFormatEvent extends Event implements Cancellable{
     private static final HandlerList handlers = new HandlerList();
-    private Map<String,Object> data;
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
     private boolean cancel;
     
+    private Map<String,Object> data;
+
     public PlayerInfoFormatEvent(Map<String,Object> data) {
         this.data = data;
     }
@@ -19,11 +23,8 @@ public class PlayerInfoFormatEvent extends Event implements Cancellable{
         return data;
     }
 
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
+    @Override
+	public HandlerList getHandlers() {
         return handlers;
     }
 

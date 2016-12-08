@@ -1,4 +1,4 @@
-package com.github.xzzpig.lord.zhiye;
+package com.github.xzzpig.lord.player.zhiye;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,8 +60,8 @@ public class Zhiye {
 		}
 
 		@Override
-		public double getHunger() {
-			return this.config.getDouble("Hunger");
+		public double getMaxMP() {
+			return this.config.getDouble("MP");
 		}
 
 		@Override
@@ -91,6 +91,102 @@ public class Zhiye {
 
 	}
 
+	public static final Zhiye NONE = new Zhiye(null) {
+		@Override
+		public AttributeInfo getAttribute() {
+			return new AttributeInfo(null) {
+				@Override
+				public double getArmor_M() {
+					return 0;
+				}
+
+				@Override
+				public double getArmor_P() {
+					return 0;
+				}
+
+				@Override
+				public Map<String, Integer> getCritical() {
+					Map<String, Integer> d = new HashMap<>();
+					d.put("prob", 0);
+					d.put("damage_p", 0);
+					d.put("damage_m", 0);
+					return d;
+				}
+
+				@Override
+				public double getDamage_M() {
+					return 0;
+				}
+
+				@Override
+				public double getDamage_P() {
+					return 1;
+				}
+
+				@Override
+				public double getEvasion() {
+					return 0;
+				}
+
+				@Override
+				public double getHealth() {
+					return 0;
+				}
+
+				@Override
+				public double getMaxMP() {
+					return 0;
+				}
+
+				@Override
+				public int getLevel() {
+					return 0;
+				}
+
+				@Override
+				public double getLifeSteal() {
+					return 0;
+				}
+
+				@Override
+				public double getMaxHealth() {
+					return 20;
+				}
+
+				@Override
+				public int getSpeed() {
+					return 10;
+				}
+
+				@Override
+				public String getZhiye() {
+					return getName();
+				}
+			};
+		}
+
+		@Override
+		public int getChance() {
+			return 0;
+		}
+
+		@Override
+		public int getID() {
+			return -10727;
+		}
+
+		@Override
+		public String getName() {
+			return "无";
+		}
+
+		@Override
+		public List<String> getPermission() {
+			return new ArrayList<>();
+		}
+	};
+
 	public static List<Zhiye> zhiyelist;
 
 	public static Zhiye getBy(int id) {
@@ -102,11 +198,34 @@ public class Zhiye {
 	}
 
 	public static Zhiye getBy(String name) {
+		if (name == null || name.equalsIgnoreCase("NONE"))
+			return NONE;
 		for (Zhiye zhiye : zhiyelist) {
 			if (zhiye.getName().equalsIgnoreCase(name))
 				return zhiye;
 		}
 		return null;
+	}
+
+	public static Zhiye getRandomDefaultZhiye() {
+		Zhiye zhiye = null;
+		int allchance = 0;
+		for (Zhiye z : zhiyelist) {
+			if (!z.isDefault())
+				continue;
+			allchance += z.getChance();
+		}
+		int chance = Vars.random.nextInt(allchance);
+		for (Zhiye z : zhiyelist) {
+			if (!z.isDefault())
+				continue;
+			chance -= z.getChance();
+			if (chance <= 0) {
+				zhiye = z;
+				break;
+			}
+		}
+		return zhiye;
 	}
 
 	public static void loadConfig() {

@@ -13,6 +13,9 @@ public class EquipAPIListener implements Listener{
 	public void onStringBuild(StringMatcherEvent event){
 		if(!event.getData().containsKey("equip")) return;
 		Equipment equip = (Equipment) event.getData().get("equip");
+		if(equip!=null){
+			
+		}
 		String str = event.getSouce();
 		str = str.replace('&', ChatColor.COLOR_CHAR);
 		event.setSouce(str);
