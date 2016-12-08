@@ -7,6 +7,11 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.Plugin;
+
+import com.github.xzzpig.lord.Main;
 
 public class PlayerInfo implements IPlayerInfo {
 
@@ -31,12 +36,23 @@ public class PlayerInfo implements IPlayerInfo {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void fresh(){
+	public void fresh() {
 		Player player = Bukkit.getPlayer(getName());
 		player.setMaxHealth(getMaxHealth());
 		float speed = getSpeed();
-		speed = speed>0?speed:0;
-		player.setWalkSpeed(speed/100);
+		speed = speed > 0 ? speed : 0;
+		player.setWalkSpeed(speed / 100);
+		for(PermissionAttachmentInfo info:player.getEffectivePermissions()){
+			PermissionAttachment att = info.getAttachment();
+			Plugin plugin = att.getPlugin();
+			if (plugin!=null&&plugin.getName().equalsIgnoreCase("Lord")) {
+				att.remove();
+			}
+		}
+		PermissionAttachment permissionAttachment = player.addAttachment(Main.instance);
+		for (String per : getPermission()) {
+			permissionAttachment.setPermission(per, true);
+		}
 	}
 
 	@Override
@@ -54,7 +70,7 @@ public class PlayerInfo implements IPlayerInfo {
 		}
 		return r;
 	}
-	
+
 	@Override
 	public double getArmor_P() {
 		double r = 0;
@@ -156,22 +172,6 @@ public class PlayerInfo implements IPlayerInfo {
 	}
 
 	@Override
-	public double getMaxMP() {
-		double r = 0;
-		String command = "maxmp";
-		Map<String, Object> data = new HashMap<>();
-		data.put("command", command);
-		data.put("info", this);
-		data.put("result", r);
-		PlayerInfoFormatEvent event = new PlayerInfoFormatEvent(data);
-		Bukkit.getPluginManager().callEvent(event);
-		if (event.getData().containsKey("result")) {
-			r = (double) event.getData().get("result");
-		}
-		return r;
-	}
-
-	@Override
 	public int getLevel() {
 		int r = 0;
 		String command = "level";
@@ -219,11 +219,27 @@ public class PlayerInfo implements IPlayerInfo {
 		return r;
 	}
 
+	@Override
+	public double getMaxMP() {
+		double r = 0;
+		String command = "maxmp";
+		Map<String, Object> data = new HashMap<>();
+		data.put("command", command);
+		data.put("info", this);
+		data.put("result", r);
+		PlayerInfoFormatEvent event = new PlayerInfoFormatEvent(data);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.getData().containsKey("result")) {
+			r = (double) event.getData().get("result");
+		}
+		return r;
+	}
+
 	public String getName() {
 		return name;
 	}
 
-	public String getPlayerName(){
+	public String getPlayerName() {
 		return name;
 	}
 
@@ -242,7 +258,7 @@ public class PlayerInfo implements IPlayerInfo {
 		}
 		return r;
 	}
-	
+
 	@Override
 	public String getZhiye() {
 		String r = null;
@@ -255,6 +271,23 @@ public class PlayerInfo implements IPlayerInfo {
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.getData().containsKey("result")) {
 			r = (String) event.getData().get("result");
+		}
+		return r;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getPermission() {
+		List<String> r = new ArrayList<>();
+		String command = "permission";
+		Map<String, Object> data = new HashMap<>();
+		data.put("command", command);
+		data.put("info", this);
+		data.put("result", r);
+		PlayerInfoFormatEvent event = new PlayerInfoFormatEvent(data);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.getData().containsKey("result")) {
+			r = (List<String>) event.getData().get("result");
 		}
 		return r;
 	}

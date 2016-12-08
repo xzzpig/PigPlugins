@@ -60,11 +60,6 @@ public class Zhiye {
 		}
 
 		@Override
-		public double getMaxMP() {
-			return this.config.getDouble("MP");
-		}
-
-		@Override
 		public int getLevel() {
 			return 0;
 		}
@@ -80,6 +75,11 @@ public class Zhiye {
 		}
 
 		@Override
+		public double getMaxMP() {
+			return this.config.getDouble("MP");
+		}
+
+		@Override
 		public int getSpeed() {
 			return this.config.getInt("Speed");
 		}
@@ -87,6 +87,11 @@ public class Zhiye {
 		@Override
 		public String getZhiye() {
 			return getName();
+		}
+
+		@Override
+		public List<String> getPermission() {
+			return Zhiye.this.getPermission();
 		}
 
 	}
@@ -135,11 +140,6 @@ public class Zhiye {
 				}
 
 				@Override
-				public double getMaxMP() {
-					return 0;
-				}
-
-				@Override
 				public int getLevel() {
 					return 0;
 				}
@@ -152,6 +152,11 @@ public class Zhiye {
 				@Override
 				public double getMaxHealth() {
 					return 20;
+				}
+
+				@Override
+				public double getMaxMP() {
+					return 0;
 				}
 
 				@Override

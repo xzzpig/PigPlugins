@@ -24,6 +24,8 @@ import com.github.xzzpig.pigapi.event.Event;
 public class Main extends JavaPlugin {
 	private static int notice_index, notice_size;
 
+	public static Main instance;
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -80,6 +82,7 @@ public class Main extends JavaPlugin {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
+		instance = this;
 		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
 		saveDefaultConfig();
 		Vars.config = TConfig.getConfigFile(getName(), "config.yml");

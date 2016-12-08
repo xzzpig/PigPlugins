@@ -10,6 +10,7 @@ public class Shop {
 	public static List<String> getShopList() {
 		return new ArrayList<>(Vars.config.getConfigurationSection("Lord.shop").getKeys(false));
 	}
+
 	public int eid, price, exp, honor;
 
 	public String name, permission;
@@ -22,8 +23,8 @@ public class Shop {
 		exp = Vars.config.getInt("Lord.shop." + name + ".Exp", 0);
 		honor = Vars.config.getInt("Lord.shop." + name + ".Honor", 0);
 	}
-	
-	public Equipment getEquipment(){
+
+	public Equipment getEquipment() {
 		return Equipment.getBy(eid);
 	}
 }

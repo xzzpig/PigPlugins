@@ -52,7 +52,7 @@ Lord:
         Armor_p: 0.8
         Armor_m: 0.8
         Health: 0
-        Hunger: 2
+        MP: 2
         LifeSteal: 10
         Evasion: 100
         Critical:
@@ -61,7 +61,7 @@ Lord:
           prob: 5
         Repel:
           level: 1
-          preb: 5
+          prob: 5
         Fire:
           time: 60
           prob: 50
