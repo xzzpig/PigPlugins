@@ -1,5 +1,9 @@
 package com.github.xzzpig.lord;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Random;
@@ -13,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.xzzpig.lord.equip.EquipAPIListener;
 import com.github.xzzpig.lord.equip.Equipment;
+import com.github.xzzpig.lord.market.MarketCommand;
 import com.github.xzzpig.lord.player.PlayerInfoListener;
 import com.github.xzzpig.lord.player.zhiye.Zhiye;
 import com.github.xzzpig.lord.player.zhiye.ZhiyeBukkitListener;
@@ -20,6 +25,9 @@ import com.github.xzzpig.pigapi.bukkit.TCommandHelp;
 import com.github.xzzpig.pigapi.bukkit.TConfig;
 import com.github.xzzpig.pigapi.bukkit.TMessage;
 import com.github.xzzpig.pigapi.event.Event;
+import com.github.xzzpig.pigapi.json.JSONException;
+import com.github.xzzpig.pigapi.json.JSONObject;
+import com.github.xzzpig.pigapi.json.JSONTokener;
 
 public class Main extends JavaPlugin {
 	private static int notice_index, notice_size;
@@ -68,6 +76,8 @@ public class Main extends JavaPlugin {
 				}).start();
 			}
 			return true;
+		}else if(arg0.equalsIgnoreCase("market")){
+			return MarketCommand.onCommand(sender, command, label, args);
 		}
 		return false;
 	}
@@ -76,6 +86,13 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		TConfig.saveConfig(getName(), Vars.playerStaticInfo, "playerstaticinfo.yml");
+		TConfig.saveConfig(getName(), Vars.playerStaticInfo, "marketitemstacks.yml");
+		try {
+			Vars.marketdata.write(new FileWriter(Vars.marketdatafile));
+		} catch (JSONException | IOException e) {
+			e.printStackTrace();
+			System.out.println("[Lord]MarketData保存失败，这可能导致市场回档");
+		}
 		getLogger().info(getName() + "插件已被停用 ");
 	}
 
@@ -87,6 +104,25 @@ public class Main extends JavaPlugin {
 		saveDefaultConfig();
 		Vars.config = TConfig.getConfigFile(getName(), "config.yml");
 		Vars.playerStaticInfo = TConfig.getConfigFile(getName(), "playerstaticinfo.yml");
+		Vars.marketitemstacks = TConfig.getConfigFile(getName(), "marketitemstacks.yml");
+		File marketdata = new File(this.getDataFolder(),"marketdata.json");
+		Vars.marketdatafile = marketdata;
+		if(!marketdata.exists()){
+			try {
+				marketdata.createNewFile();
+				Vars.marketdata = new JSONObject();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			try {
+				Vars.marketdata = new JSONObject(new JSONTokener(new FileReader(marketdata)));
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("[Lord]MarketData读取失败，将重新生成");
+				Vars.marketdata = new JSONObject();
+			}
+		}
 		Vars.random = new Random();
 		Config.read(Vars.config);
 		notice_size = Config.Lord_Notice_content.size();

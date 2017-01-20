@@ -2,12 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/Other/craftbukkit-1.7.10-R0.1-20140713.051447-4.jar">
+	<classpathentry kind="lib" path="/home/xzzpig/workspaces/workspace_bukkit/craftbukkit-1.7.10-R0.1-20140713.051447-4.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="https://jd.bukkit.org"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/PigAPI/bin" sourcepath="/PigAPI/src"/>
-	<classpathentry kind="lib" path="/PigAPI_bukkit/bin"/>
+	<classpathentry kind="lib" path="/PigAPI_Bukkit/bin"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

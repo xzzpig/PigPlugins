@@ -23,6 +23,8 @@ permission:
   lord.defalut.*:
     description: Lord的普通权限
     default: op
+    children:
+      lord.default.command.*: true
   lord.admin.command.*:
     description: Lord的管理员命令权限
     default: op
@@ -31,5 +33,15 @@ permission:
   lord.admin.command.notice:
     description: Lord notice的命令权限
     default: op
+  lord.default.command.*:
+    description: Lord的普通命令权限
+    default: op
     children:
-      lord.admin.*: true
+      lord.default.command.market.open: true
+      lord.default.command.market.create: true
+  lord.default.command.market.open:
+    description: 打开市场权限
+    default: op
+  lord.default.command.market.create:
+    description: 上架物品权限
+    default: op

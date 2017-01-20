@@ -54,14 +54,14 @@
 	
 	交易系统:
 	交易系统帮助：【玩家权限Lord.market.help】
-	/Lord market help
+√	/Lord market help
 	
 	打开交易市场:【玩家权限Lord.market.open】
-	/Lord market open
+×	/Lord market open|事件未监听，箱子物品可移动
 	
 	上架物品:(不可以不输入,必填,可填0)【玩家权限Lord.market.create】
 	手中拿着要上架的商品输入：
-	/Lord market create <Price> <exp>
+√	/Lord market create <Price> <exp>
 	
 	购买物品:
 	交易市场面板Shift键+左键一下
@@ -310,7 +310,16 @@
 	
 	
 	
+	命令:
+	cmd			args			describe				usage
 	
+	Lord		null			Lord的主命令				/lord help
+	. notice 	[内容]			发布一个临时(刷屏)公告	null
+	. shop 		null 			商店相关命令				/lord shop help
+	. . open	<Shop> <Player>	打开商店					null
+	. market	null			交易相关命令				/lord market help
+	. . open	null			打开交易市场				null
+	. . create	<Price> <exp>	上架物品					手中拿着要上架的商品输入
 	
 	权限:
 	permission:
@@ -328,6 +337,8 @@
 	  lord.defalut.*:
 	    description: Lord的普通权限
 	    default: op
+	    children:
+	      lord.default.command.*: true
 	  lord.admin.command.*:
 	    description: Lord的管理员命令权限
 	    default: op
@@ -336,5 +347,15 @@
 	  lord.admin.command.notice:
 	    description: Lord notice的命令权限
 	    default: op
+	  lord.default.command.*:
+	    description: Lord的普通命令权限
+	    default: op
 	    children:
-	      lord.admin.*: true
+	      lord.default.command.market.open: true
+	      lord.default.command.market.create: true
+	  lord.default.command.market.open:
+	    description: 打开市场权限
+	    default: op
+	  lord.default.command.market.create:
+	    description: 上架物品权限
+	    default: op
