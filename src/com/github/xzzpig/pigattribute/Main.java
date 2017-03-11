@@ -1,4 +1,4 @@
-package com.github.xzzpig.example;
+package com.github.xzzpig.pigattribute;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,6 +20,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		return Help.Example.runCommand(Help.Example.new CommandInstance(sender, command, label, args));
+		return Help.PigAttribute.runCommand(Help.PigAttribute	
+				.new CommandInstance(sender, command, label, args));
 	}
 }

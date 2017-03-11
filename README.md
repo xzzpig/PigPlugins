@@ -1,0 +1,2 @@
+#PigAttribute
+用于管理玩家属性
