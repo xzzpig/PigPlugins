@@ -7,12 +7,22 @@ import com.github.xzzpig.pigapi.event.Event;
 public class GetAttributeEvent<T> extends Event {
 	private Player p;
 	private Class<T> type;
+	private String name;
 
 	private T result;
 
-	public GetAttributeEvent(Player p, Class<T> type) {
+	public GetAttributeEvent(Player p, String name, Class<T> type) {
 		this.p = p;
 		this.type = type;
+		this.name = name;
+	}
+
+	@SuppressWarnings("unchecked")
+	public GetAttributeEvent(Player p, String name, T defaultValue) {
+		this.p = p;
+		this.type = (Class<T>) defaultValue.getClass();
+		this.name = name;
+		result = defaultValue;
 	}
 
 	public Player getPlayer() {
@@ -21,6 +31,10 @@ public class GetAttributeEvent<T> extends Event {
 
 	public Class<T> getType() {
 		return type;
+	}
+
+	public String getAttributeName() {
+		return name;
 	}
 
 	public T getResult() {

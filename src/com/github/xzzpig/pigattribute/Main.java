@@ -10,6 +10,7 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
 		saveDefaultConfig();
+		this.getServer().getPluginManager().registerEvents(PigAttributeListener.instance, this);
 	}
 
 	// 插件停用函数
@@ -20,7 +21,6 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		return Help.PigAttribute.runCommand(Help.PigAttribute	
-				.new CommandInstance(sender, command, label, args));
+		return Help.PigAttribute.runCommand(Help.PigAttribute.new CommandInstance(sender, command, label, args));
 	}
 }

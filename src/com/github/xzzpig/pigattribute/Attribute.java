@@ -21,7 +21,13 @@ public class Attribute {
 	}
 
 	public <T> T getAttribute(String name, Class<T> type) {
-		GetAttributeEvent<T> eve = new GetAttributeEvent<>(p, type);
+		GetAttributeEvent<T> eve = new GetAttributeEvent<>(p, name, type);
+		Event.callEvent(eve);
+		return eve.getResult();
+	}
+
+	public <T> T getAttribute(String name, T defaultValue) {
+		GetAttributeEvent<T> eve = new GetAttributeEvent<>(p, name, defaultValue);
 		Event.callEvent(eve);
 		return eve.getResult();
 	}
