@@ -1,12 +1,12 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: PigZhiYe
+main: com.github.xzzpig.pigzhiye.Main
 version: V0.1
 author: xzzpig
 depend:
 - PigAPI
 commands:
-  example: 
-    description: Example的主命令
-    usage: /ep help
+  pigzhiye: 
+    description: PigZhiYe的主命令
+    usage: /pzy help
     aliases:
-    - ep
+    - pzy
