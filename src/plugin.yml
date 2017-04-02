@@ -1,12 +1,12 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: SimpleLore
+main: com.github.xzzpig.simplelore.Main
 version: V0.1
 author: xzzpig
 depend:
 - PigAPI
 commands:
   example: 
-    description: Example的主命令
-    usage: /ep help
+    description: SimpleLore的主命令
+    usage: /sl help
     aliases:
-    - ep
+    - sl
