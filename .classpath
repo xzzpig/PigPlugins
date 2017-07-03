@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/PigAPI_Bukkit/bin" sourcepath="/PigAPI_Bukkit/src"/>
 	<classpathentry kind="lib" path="/PigAPI/bin" sourcepath="/PigAPI/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Bukkit"/>
 	<classpathentry kind="output" path="bin"/>

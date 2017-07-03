@@ -98,15 +98,33 @@ public class SLListener implements Listener {
 					}
 				}
 			}
-			if (!(event.getEntity() instanceof Player))
-				continue;
-//			Player player = (Player) event.getEntity();
-			{
-				Pattern p = Pattern.compile("\\+([0-9]{1,}) Armor");
-				Matcher m = p.matcher(lore);
-				while (m.find()) {
-					int i = Integer.valueOf(m.group(1));
-					damage -= i;
+			if ((event.getEntity() instanceof Player)) {
+				{
+					Pattern p = Pattern.compile("\\+([0-9]{1,})-([0-9]{1,}) Damagep");
+					Matcher m = p.matcher(lore);
+					while (m.find()) {
+						int i = Integer.valueOf(m.group(1));
+						int j = Integer.valueOf(m.group(2));
+						damage += ((i < j ? i : j) + Math.random() * Math.abs(i - j));
+					}
+				}
+				{
+					Pattern p = Pattern.compile("\\+([0-9]{1,}) Armor");
+					Matcher m = p.matcher(lore);
+					while (m.find()) {
+						int i = Integer.valueOf(m.group(1));
+						damage -= i;
+					}
+				}
+			} else {
+				{
+					Pattern p = Pattern.compile("\\+([0-9]{1,})-([0-9]{1,}) Damagee");
+					Matcher m = p.matcher(lore);
+					while (m.find()) {
+						int i = Integer.valueOf(m.group(1));
+						int j = Integer.valueOf(m.group(2));
+						damage += ((i < j ? i : j) + Math.random() * Math.abs(i - j));
+					}
 				}
 			}
 		}
