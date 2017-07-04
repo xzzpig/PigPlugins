@@ -6,10 +6,13 @@ import java.util.regex.Pattern;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.xzzpig.pigapi.bukkit.TString;
@@ -26,6 +29,8 @@ public class SLListener implements Listener {
 			return;
 		double damage = event.getDamage();
 		List<String> lores = item.getItemMeta().getLore();
+		if (lores == null)
+			return;
 		for (String lore : lores) {
 			lore = TString.removeColor(lore);
 			{
@@ -47,7 +52,7 @@ public class SLListener implements Listener {
 				}
 			}
 			{
-				Pattern p = Pattern.compile("\\+([0-9]{1,})-([0-9]{1,}) Damage");
+				Pattern p = Pattern.compile("\\+([0-9]{1,})-([0-9]{1,}) Damaged");
 				Matcher m = p.matcher(lore);
 				while (m.find()) {
 					int i = Integer.valueOf(m.group(1));
@@ -84,6 +89,7 @@ public class SLListener implements Listener {
 					if (damager.getLevel() < i) {
 						event.setCancelled(true);
 						damager.sendMessage("[SimpleLore]你的等级不足以使用这个物品");
+						return;
 					}
 				}
 			}
@@ -95,6 +101,7 @@ public class SLListener implements Listener {
 					if (damager.hasPermission("simplelore.type." + type)) {
 						event.setCancelled(true);
 						damager.sendMessage("[SimpleLore]你没有权限使用这个物品");
+						return;
 					}
 				}
 			}
@@ -125,6 +132,84 @@ public class SLListener implements Listener {
 						int j = Integer.valueOf(m.group(2));
 						damage += ((i < j ? i : j) + Math.random() * Math.abs(i - j));
 					}
+				}
+			}
+			event.setDamage(damage);
+		}
+	}
+
+	@EventHandler
+	public void onRightClick(PlayerInteractEvent event) {
+		if (!event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+			return;
+		}
+		Player player = event.getPlayer();
+		ItemStack item = player.getItemInHand();
+		if (item == null || item.getType() == Material.AIR)
+			return;
+		List<String> lores = item.getItemMeta().getLore();
+		if (lores == null)
+			return;
+		for (String lore : lores) {
+			lore = TString.removeColor(lore);
+			{
+				Pattern p = Pattern.compile("Lv ([0-9]{1,})");
+				Matcher m = p.matcher(lore);
+				while (m.find()) {
+					int i = Integer.valueOf(m.group(1));
+					if (player.getLevel() < i) {
+						event.setCancelled(true);
+						player.sendMessage("[SimpleLore]你的等级不足以使用这个物品");
+						return;
+					}
+				}
+			}
+			{
+				Pattern p = Pattern.compile("Type:(.{1,})");
+				Matcher m = p.matcher(lore);
+				while (m.find()) {
+					String type = m.group(1);
+					if (player.hasPermission("simplelore.type." + type)) {
+						event.setCancelled(true);
+						player.sendMessage("[SimpleLore]你没有权限使用这个物品");
+						return;
+					}
+				}
+			}
+			{
+				Pattern p = Pattern.compile("\\+([0-9]{1,}) Fireball");
+				Matcher m = p.matcher(lore);
+				while (m.find()) {
+					int i = Integer.valueOf(m.group(1));
+					if (i > 1)
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								for (int j = 0; j < i; j++) {
+									player.launchProjectile(Fireball.class);
+									try {
+										Thread.sleep(200);
+									} catch (InterruptedException e) {
+									}
+								}
+							}
+						}).start();
+					else
+						player.launchProjectile(Fireball.class);
+				}
+			}
+			{
+				Pattern p = Pattern.compile("\\+([0-9]{1,})-([0-9]{1,}) ([0-9]{1,}) Heal");
+				Matcher m = p.matcher(lore);
+				while (m.find()) {
+					int i = Integer.valueOf(m.group(1));
+					int j = Integer.valueOf(m.group(2));
+					int k = Integer.valueOf(m.group(2));
+					player.getNearbyEntities(k, k, k).stream().filter(e -> e instanceof Player).map(e -> (Damageable) e)
+							.forEach(p2 -> {
+								double heal = ((i < j ? i : j) + Math.random() * Math.abs(i - j)) + p2.getHealth();
+								p2.setHealth(heal < p2.getMaxHealth() ? heal : p2.getMaxHealth());
+							});
 				}
 			}
 		}
