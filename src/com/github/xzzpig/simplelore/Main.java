@@ -6,8 +6,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
+	public static Main self;
+	
 	@Override
 	public void onEnable() {
+		self = this;
 		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
 		saveDefaultConfig();
 		this.getServer().getPluginManager().registerEvents(new SLListener(),this);

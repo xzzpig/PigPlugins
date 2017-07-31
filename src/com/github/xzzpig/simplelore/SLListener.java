@@ -1,19 +1,27 @@
 package com.github.xzzpig.simplelore;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.MetadataValueAdapter;
+import org.bukkit.projectiles.ProjectileSource;
 
 import com.github.xzzpig.pigapi.bukkit.TString;
 
@@ -47,7 +55,7 @@ public class SLListener implements Listener {
 				while (m.find()) {
 					int i = Integer.valueOf(m.group(1));
 					if (Math.random() * 100 < i) {
-						damage = Double.MAX_VALUE;
+						damage = Double.MAX_VALUE / 3;
 					}
 				}
 			}
@@ -98,7 +106,7 @@ public class SLListener implements Listener {
 				Matcher m = p.matcher(lore);
 				while (m.find()) {
 					String type = m.group(1);
-					if (damager.hasPermission("simplelore.type." + type)) {
+					if (!damager.hasPermission("simplelore.type." + type)) {
 						event.setCancelled(true);
 						damager.sendMessage("[SimpleLore]你没有权限使用这个物品");
 						return;
@@ -115,14 +123,58 @@ public class SLListener implements Listener {
 						damage += ((i < j ? i : j) + Math.random() * Math.abs(i - j));
 					}
 				}
-				{
-					Pattern p = Pattern.compile("\\+([0-9]{1,}) Armor");
-					Matcher m = p.matcher(lore);
-					while (m.find()) {
-						int i = Integer.valueOf(m.group(1));
-						damage -= i;
+				Player player = (Player) event.getEntity();
+				List<ItemStack> items = new ArrayList<>();
+				if (player.getItemInHand() != null && player.getItemInHand().getType() != Material.AIR) {
+					items.add(player.getItemInHand());
+				}
+				items.addAll(Arrays.asList(player.getEquipment().getArmorContents()));
+				equip: for (ItemStack itemStack : items) {
+					if (itemStack == null || itemStack.getType() == Material.AIR)
+						continue;
+					List<String> lores2 = item.getItemMeta().getLore();
+					if (lores2 == null)
+						continue;
+					for (String lore2 : lores2) {
+						lore2 = TString.removeColor(lore2);
+						{
+							Pattern p = Pattern.compile("Lv ([0-9]{1,})");
+							Matcher m = p.matcher(lore2);
+							while (m.find()) {
+								int i = Integer.valueOf(m.group(1));
+								if (player.getLevel() < i) {
+									continue equip;
+								}
+							}
+						}
+						{
+							Pattern p = Pattern.compile("Type:(.{1,})");
+							Matcher m = p.matcher(lore);
+							while (m.find()) {
+								String type = m.group(1);
+								if (!player.hasPermission("simplelore.type." + type)) {
+									continue equip;
+								}
+							}
+						}
+						{
+							Pattern p = Pattern.compile("\\+([0-9]{1,}) Armor");
+							Matcher m = p.matcher(lore2);
+							while (m.find()) {
+								int i = Integer.valueOf(m.group(1));
+								damage -= i;
+							}
+						}
 					}
 				}
+				// {
+				// Pattern p = Pattern.compile("\\+([0-9]{1,}) Armor");
+				// Matcher m = p.matcher(lore);
+				// while (m.find()) {
+				// int i = Integer.valueOf(m.group(1));
+				// damage -= i;
+				// }
+				// }
 			} else {
 				{
 					Pattern p = Pattern.compile("\\+([0-9]{1,})-([0-9]{1,}) Damagee");
@@ -169,7 +221,7 @@ public class SLListener implements Listener {
 				Matcher m = p.matcher(lore);
 				while (m.find()) {
 					String type = m.group(1);
-					if (player.hasPermission("simplelore.type." + type)) {
+					if (!player.hasPermission("simplelore.type." + type)) {
 						event.setCancelled(true);
 						player.sendMessage("[SimpleLore]你没有权限使用这个物品");
 						return;
@@ -177,16 +229,37 @@ public class SLListener implements Listener {
 				}
 			}
 			{
-				Pattern p = Pattern.compile("\\+([0-9]{1,}) Fireball");
+				Pattern p = Pattern.compile("\\+([0-9]{1,}) ([0-9]{1,}) Fireball");
 				Matcher m = p.matcher(lore);
 				while (m.find()) {
 					int i = Integer.valueOf(m.group(1));
+					long space = Long.valueOf(m.group(2));
+					List<MetadataValue> ms = player.getMetadata("fireball_last_sl");
+					if (ms != null && ms.size() != 0) {
+						long last = ms.get(0).asLong();
+						if (last > System.currentTimeMillis()) {
+							continue;
+						}
+					}
+					double damage = ((LivingEntity) player).getLastDamage();
+					MetadataValueAdapter damageValue = new MetadataValueAdapter(Main.self) {
+						@Override
+						public Object value() {
+							return damage;
+						}
+
+						@Override
+						public void invalidate() {
+
+						}
+					};
 					if (i > 1)
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
 								for (int j = 0; j < i; j++) {
-									player.launchProjectile(Fireball.class);
+									Fireball fireball = player.launchProjectile(Fireball.class);
+									fireball.setMetadata("damage_sl", damageValue);
 									try {
 										Thread.sleep(200);
 									} catch (InterruptedException e) {
@@ -194,8 +267,22 @@ public class SLListener implements Listener {
 								}
 							}
 						}).start();
-					else
-						player.launchProjectile(Fireball.class);
+					else {
+						Fireball fireball = player.launchProjectile(Fireball.class);
+						fireball.setMetadata("damage_sl", damageValue);
+					}
+					player.setMetadata("fireball_last_sl", new MetadataValueAdapter(Main.self) {
+						@Override
+						public Object value() {
+							return System.currentTimeMillis() + space;
+						}
+
+						@Override
+						public void invalidate() {
+							// TODO Auto-generated method stub
+
+						}
+					});
 				}
 			}
 			{
@@ -213,5 +300,22 @@ public class SLListener implements Listener {
 				}
 			}
 		}
+	}
+
+	@EventHandler
+	public void onDamageByFB(EntityDamageByEntityEvent event) {
+		Entity entity = event.getDamager();
+		if (!(entity instanceof Fireball))
+			return;
+		Fireball fireball = (Fireball) entity;
+		@SuppressWarnings("deprecation")
+		ProjectileSource shooter = ((Projectile) fireball).getShooter();
+		if (!(shooter instanceof Player))
+			return;
+		List<MetadataValue> ms = fireball.getMetadata("damage_sl");
+		if (ms == null || ms.size() == 0)
+			return;
+		LivingEntity livingEntity = (LivingEntity) event.getEntity();
+		livingEntity.damage(ms.get(0).asDouble());
 	}
 }
