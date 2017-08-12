@@ -1,12 +1,14 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: PigRGPCore
+main: com.github.xzzpig.pigrpgcore.Main
 version: V0.1
 author: xzzpig
 depend:
 - PigAPI
 commands:
-  example: 
-    description: Example的主命令
-    usage: /ep help
+  pigrpgcore:
+    description: PigRGPCore的主命令
+    usage: /prc help
     aliases:
-    - ep
+    - prc
+    - pigrc
+    - pigrpgc
