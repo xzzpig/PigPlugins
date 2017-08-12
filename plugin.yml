@@ -1,12 +1,12 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: PigRPGLore
+main: com.github.xzzpig.pigrpglore.Main
 version: V0.1
 author: xzzpig
 depend:
-- PigAPI
+- PigRPGCore
 commands:
-  example: 
-    description: Example的主命令
-    usage: /ep help
+  pigrpglore: 
+    description: PigRPGLore的主命令
+    usage: /prl help
     aliases:
-    - ep
+    - prl

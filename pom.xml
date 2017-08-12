@@ -19,8 +19,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5.1</version>
 				<configuration>
-					<source />
-					<target />
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>com.github.xzzpig</groupId>
 			<artifactId>PigUtils</artifactId>
-			<version>v1.1</version>
+			<version>8656a09a5d</version>
 		</dependency>
 	</dependencies>
 </project>
