@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
+import com.github.xzzpig.pigrpgcore.EDPlayerInfo.DamageType;
+
 public class RPGCoreListener implements Listener {
 
 	public static RPGCoreListener instance = new RPGCoreListener();
@@ -27,10 +29,15 @@ public class RPGCoreListener implements Listener {
 			}
 		}
 		if (event.getEntity() instanceof Player) {
+			EDPlayerInfo damagedInfo = new EDPlayerInfo((Player) event.getEntity());
 			if (event.getDamager() instanceof Projectile) {
-				damage -= new EDPlayerInfo((Player) event.getDamager()).getRemoteDefence(event.getDamager());
+				damage -= damagedInfo.getRemoteDefence(event.getDamager());
+				if (EDPlayerInfo.trigger(100, damagedInfo.getEvasionChance(DamageType.Remote)))
+					damage = 0;
 			} else {
-				damage -= new EDPlayerInfo((Player) event.getDamager()).getPhysicalDefence(event.getDamager());
+				damage -= damagedInfo.getPhysicalDefence(event.getDamager());
+				if (EDPlayerInfo.trigger(100, damagedInfo.getEvasionChance(DamageType.Physical)))
+					damage = 0;
 			}
 		}
 		if (damage < 0)

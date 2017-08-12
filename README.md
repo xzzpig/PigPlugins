@@ -10,4 +10,5 @@
   * MegicalDefence
   * RemoteDefence
   * CriticalChance
+  * EvasionChance
   * canUse

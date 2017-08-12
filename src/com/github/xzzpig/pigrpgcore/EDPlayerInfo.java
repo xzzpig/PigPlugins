@@ -73,7 +73,23 @@ public class EDPlayerInfo {
 		return chance < 0 ? 0 : chance > 100 ? 100 : chance;
 	}
 
+	public int getEvasionChance(DamageType type) {
+		int chance = edData.get("EvasionChance",
+				array2KVMap(String.class, Object.class, "player", player, "type", type), Integer.class);
+		return chance < 0 ? 0 : chance > 100 ? 100 : chance;
+	}
+
+	public boolean canUse(ItemStack item, String usage) {
+		return edData.get("canUse",
+				array2KVMap(String.class, Object.class, "item", item, "usage", usage, "player", player),
+				Boolean.class) == Boolean.FALSE ? false : true;
+	}
+
 	public boolean canUse(ItemStack item) {
-		return edData.get("canUse", array2KVMap(String.class, Object.class, "item", item), Boolean.class);
+		return canUse(item, null);
+	}
+
+	public static boolean trigger(int max, int chance) {
+		return (Math.random() * max < chance);
 	}
 }

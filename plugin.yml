@@ -1,4 +1,4 @@
-name: PigRGPCore
+name: PigRPGCore
 main: com.github.xzzpig.pigrpgcore.Main
 version: V0.1
 author: xzzpig
@@ -6,7 +6,7 @@ depend:
 - PigAPI
 commands:
   pigrpgcore:
-    description: PigRGPCore的主命令
+    description: PigRPGCore的主命令
     usage: /prc help
     aliases:
     - prc
