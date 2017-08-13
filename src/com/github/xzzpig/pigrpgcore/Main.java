@@ -6,8 +6,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
+	public static Main instance;
+	
 	@Override
 	public void onEnable() {
+		instance = this;
 		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载");
 		saveDefaultConfig();
 		getServer().getPluginManager().registerEvents(RPGCoreListener.instance, this);
@@ -16,6 +19,7 @@ public class Main extends JavaPlugin {
 	// 插件停用函数
 	@Override
 	public void onDisable() {
+		instance = null;
 		getLogger().info(getName() + "插件已被停用 ");
 	}
 

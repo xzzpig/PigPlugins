@@ -12,3 +12,8 @@
   * CriticalChance
   * EvasionChance
   * canUse
+* Player发射的弹射物(Projectile)添加属性(getMetadata)
+
+|    Key    | 返回类型   | 说明   |
+|:---------:|:---------:|:------:|
+| handItem  | ItemStack | 物品是玩家发射时手中的物品 |

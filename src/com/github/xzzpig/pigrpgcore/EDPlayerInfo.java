@@ -1,7 +1,6 @@
 package com.github.xzzpig.pigrpgcore;
 
 import static com.github.xzzpig.pigutils.data.DataUtils.array2KVMap;
-import static com.github.xzzpig.pigutils.reflect.ClassUtils.checkThisConstructorArgs;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,7 +20,6 @@ public class EDPlayerInfo {
 	private EventDriveData edData;
 
 	public EDPlayerInfo(@NotNull Player p) {
-		checkThisConstructorArgs(p);
 		this.player = p;
 		edData = new EventDriveData(player);
 	}
@@ -69,13 +67,18 @@ public class EDPlayerInfo {
 	}
 
 	public int getCriticalChance() {
-		int chance = edData.get("CriticalChance", Integer.class);
+		Integer chance = edData.get("CriticalChance", array2KVMap(String.class, Object.class, "player", player),
+				Integer.class);
+		if (chance == null)
+			chance = 0;
 		return chance < 0 ? 0 : chance > 100 ? 100 : chance;
 	}
 
 	public int getEvasionChance(DamageType type) {
-		int chance = edData.get("EvasionChance",
+		Integer chance = edData.get("EvasionChance",
 				array2KVMap(String.class, Object.class, "player", player, "type", type), Integer.class);
+		if (chance == null)
+			chance = 0;
 		return chance < 0 ? 0 : chance > 100 ? 100 : chance;
 	}
 
@@ -86,7 +89,8 @@ public class EDPlayerInfo {
 	}
 
 	public boolean canUse(ItemStack item) {
-		return canUse(item, null);
+		boolean b = canUse(item, null);
+		return b;
 	}
 
 	public static boolean trigger(int max, int chance) {
