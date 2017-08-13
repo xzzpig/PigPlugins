@@ -1,5 +1,11 @@
 package com.github.xzzpig.pigrpglore;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,30 +26,43 @@ import com.github.xzzpig.pigutils.event.Listener;
 public class PigRPGLoreListener implements Listener {
 	public static PigRPGLoreListener instance = new PigRPGLoreListener();
 
+	private PigRPGLoreListener() {
+	}
+
 	@EventHandler
 	public void onGetDouble(EventDriveDataGetEvent<Double> event) {
+		if (event.getValueClass() != Double.class)
+			return;
 		if (event.getValue() == null)
 			event.setValue(0d);
 		Player p = event.getExtras("player", Player.class);
-		// Entity demaged = event.getExtras("entity", Entity.class);
-		ItemStack item = p.getItemInHand();
-		if (item != null && item.getType() != Material.AIR && new EDPlayerInfo(p).canUse(item)) {
-			PigItemEffectEvent e = new PigItemEffectEvent(item, p, event.getKey() + "");
-			e.putExtras("GetEvent", event);
-			Event.callEvent(e);
-		}
+		List<ItemStack> items = new ArrayList<>();
+		items.add(p.getItemInHand());
+		items.addAll(Arrays.asList(p.getEquipment().getArmorContents()));
+		for (ItemStack item : items)
+			if (item != null && item.getType() != Material.AIR && new EDPlayerInfo(p).canUse(item)) {
+				PigItemEffectEvent e = new PigItemEffectEvent(item, p, event.getKey() + "");
+				e.putExtras("GetEvent", event);
+				Event.callEvent(e);
+			}
 	}
 
+	@EventHandler
 	public void onGetInt(EventDriveDataGetEvent<Integer> event) {
+		if (event.getValueClass() != Integer.class)
+			return;
 		if (event.getValue() == null)
 			event.setValue(0);
 		Player p = event.getExtras("player", Player.class);
-		ItemStack item = p.getItemInHand();
-		if (item != null && item.getType() != Material.AIR && new EDPlayerInfo(p).canUse(item)) {
-			PigItemEffectEvent e = new PigItemEffectEvent(item, p, event.getKey() + "");
-			e.putExtras("GetEvent", event);
-			Event.callEvent(e);
-		}
+		List<ItemStack> items = new ArrayList<>();
+		items.add(p.getItemInHand());
+		items.addAll(Arrays.asList(p.getEquipment().getArmorContents()));
+		for (ItemStack item : items)
+			if (item != null && item.getType() != Material.AIR && new EDPlayerInfo(p).canUse(item)) {
+				PigItemEffectEvent e = new PigItemEffectEvent(item, p, event.getKey() + "");
+				e.putExtras("GetEvent", event);
+				Event.callEvent(e);
+			}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -117,6 +136,7 @@ public class PigRPGLoreListener implements Listener {
 	}
 
 	@SuppressWarnings("unchecked")
+	@EventHandler
 	public void onDamagep(PigItemEffectEvent event) {
 		if (!event.getEffectTime().equals("Damage"))
 			return;
@@ -143,6 +163,7 @@ public class PigRPGLoreListener implements Listener {
 	}
 
 	@SuppressWarnings("unchecked")
+	@EventHandler
 	public void onDamagee(PigItemEffectEvent event) {
 		if (!event.getEffectTime().equals("Damage"))
 			return;
@@ -169,6 +190,7 @@ public class PigRPGLoreListener implements Listener {
 	}
 
 	@SuppressWarnings("unchecked")
+	@EventHandler
 	public void onEvasion(PigItemEffectEvent event) {
 		if (!event.getEffectTime().equals("EvasionChance"))
 			return;
@@ -181,6 +203,7 @@ public class PigRPGLoreListener implements Listener {
 				while (m.find()) {
 					int i = Integer.valueOf(m.group(1));
 					evasion += i;
+					System.out.println(lore);
 				}
 			}
 		}
@@ -188,6 +211,7 @@ public class PigRPGLoreListener implements Listener {
 	}
 
 	@SuppressWarnings("unchecked")
+	@EventHandler
 	public void onCriticalChance(PigItemEffectEvent event) {
 		if (!event.getEffectTime().equals("CriticalChance"))
 			return;
@@ -251,6 +275,8 @@ public class PigRPGLoreListener implements Listener {
 
 	@EventHandler
 	public void onCanUse(EventDriveDataGetEvent<Boolean> event) {
+		if (event.getValueClass() != Boolean.class)
+			return;
 		if (!event.getKey().equals("canUse"))
 			return;
 		ItemStack item = event.getExtras("item", ItemStack.class);
@@ -273,11 +299,25 @@ public class PigRPGLoreListener implements Listener {
 				}
 			}
 			{
-				Pattern p = Pattern.compile("Type:(.{1,})");
+				Pattern p = Pattern.compile("Type: *(\\w*)");
 				Matcher m = p.matcher(lore);
 				while (m.find()) {
 					String type = m.group(1);
 					if (!player.hasPermission("pigrpglore.type." + type)) {
+						event.setValue(false);
+						event.setCanceled(true);
+						return;
+					}
+				}
+			}
+			{
+				Pattern p = Pattern.compile("RCCooldown: *(\\d+)");
+				Matcher m = p.matcher(lore);
+				while (m.find()) {
+					// int i = Integer.valueOf(m.group(1));
+					if (cooldownItemMap.containsKey(item.hashCode()) && cooldownItemMap
+							.get(item.hashCode() + player.getName().hashCode()) > System.currentTimeMillis()) {
+						event.setValue(false);
 						event.setCanceled(true);
 						return;
 					}
@@ -285,5 +325,40 @@ public class PigRPGLoreListener implements Listener {
 			}
 		}
 		event.setValue(true);
+	}
+
+	Map<Integer, Long> cooldownItemMap = new HashMap<>();
+
+	private Thread cooldownThread;
+
+	{
+		cooldownThread = new Thread() {
+			@Override
+			public void run() {
+				List<Integer> clearList = new ArrayList<>();
+				while (!this.isInterrupted()) {
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+					}
+					if (cooldownItemMap == null)
+						continue;
+					clearList.clear();
+					long now = System.currentTimeMillis();
+					for (Entry<Integer, Long> entry : cooldownItemMap.entrySet()) {
+						if (entry.getValue() > now)
+							clearList.add(entry.getKey());
+					}
+					clearList.forEach(cooldownItemMap::remove);
+				}
+			}
+		};
+		cooldownThread.start();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		cooldownThread.interrupt();
+		super.finalize();
 	}
 }

@@ -18,5 +18,6 @@
 | +[num1]-[num2] [num3] Heal | 治疗[num3]范围内的玩家[num1]-[num2]hp | 右键 | +3-5 6 Heal |
 | Lv [num] | 使用者至少[num]级才能使用 | 物品Lore触发前 | Lv 5 |
 | Type:[str] | 使用者拥有pigrpglore.type.[str]权限才能使用 | 物品Lore触发前 | Type:XXXX |
-| RCCooldown:[num] | 右键冷却[num]ms(未完成) | 右键Lore触发前 | RCCooldown:1000 |
+| RCCooldown:[num] | 右键冷却[num]ms | 右键Lore触发前 | RCCooldown:1000 |
+| SwitchID [num1] [num2] ... [numn] | 右键依次更换物品ID([num1]->[numn])(ID不可重复) | 右键 | SwitchID 1 2 3 4 5 |
 |  |  |  |  |
