@@ -1,12 +1,17 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: PigUtilsPlugin
+main: com.github.xzzpig.pigutilsplugin.Main
 version: V0.1
 author: xzzpig
-depend:
-- PigAPI
 commands:
-  example: 
-    description: Example的主命令
-    usage: /ep help
+  pigutilsplugin:
+    description: PigUtilsPlugin的主命令
+    usage: /pigutilsplugin help
     aliases:
-    - ep
+    - pup
+permissions: 
+  pigutilsplugin.reload: 
+    default: op
+    description: 命令/pup reload 的权限
+  pigutilsplugin.list: 
+    default: op
+    description: 命令/pup list 的权限

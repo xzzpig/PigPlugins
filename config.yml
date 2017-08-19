@@ -1,0 +1,12 @@
+JavaPlugin:
+  enable: true
+  localDir: JavaPlugin
+ScriptPlugin:
+  enable: true
+  localDir: ScirptPlugin
+  URLPlugin:
+    urls: [
+      ]
+message:
+  load: '%plugin% is loaded'
+  unload: '%plugin% is unloaded'
