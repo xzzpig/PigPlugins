@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,7 +20,7 @@ import com.github.xzzpig.pigutils.plugin.script.ScriptPluginLoader;
 public class Main extends JavaPlugin {
 
 	public static Main instance;
-	public static PluginManager manager;
+	public PluginManager manager;
 
 	public FileConfiguration config;
 	public String loadMsg, unloadMsg;
@@ -49,12 +48,13 @@ public class Main extends JavaPlugin {
 		saveDefaultConfig();
 		loadJavaPlugin();
 		loadScriptPlugin();
+		getLogger().info(getName() + getDescription().getVersion() + "插件已被加载完成");
 	}
 
 	// 插件停用函数
 	@Override
 	public void onDisable() {
-		Stream.of(manager.listPlugins()).forEach(manager::unloadPlugin);
+		manager.getPluginStream().forEach(manager::unloadPlugin);
 		getLogger().info(getName() + "插件已被停用 ");
 	}
 

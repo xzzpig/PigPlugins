@@ -18,13 +18,15 @@ public class Help {
 			return true;
 		}
 		String plugin = cmd.args[1];
-		Main.manager.reloadPlugin(plugin);
+		Main.instance.manager.reloadPlugin(plugin);
 		return true;
 	}
 
 	public static boolean list(CommandInstance cmd) {
 		cmd.sendMsg("插件列表:");
-		for (String plugin : Main.manager.listPlugins()) {
+		System.err.println(Main.instance);
+		System.err.println(Main.instance.manager);
+		for (String plugin : Main.instance.manager.listPlugins()) {
 			cmd.sender.sendMessage("  " + plugin);
 		}
 		return true;
