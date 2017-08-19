@@ -1,0 +1,13 @@
+mulitserverchat:
+  pigmcnetcenter:
+    ip: localhost
+    port: 10727
+  serverinfo:
+    id: 1
+    name: First Server
+  chatconfig:
+    format: '[%ServerName%] <[%World%] %ColoredPlayer%> %Msg%'
+    worldalias:
+      world: Main World
+      DIM1: Hill
+  authkey: "setbyyourself"

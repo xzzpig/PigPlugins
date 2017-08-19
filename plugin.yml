@@ -1,12 +1,12 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: MultiServerChat
+main: com.github.xzzpig.multiserverchat.Main
 version: V0.1
 author: xzzpig
 depend:
 - PigAPI
 commands:
-  example: 
-    description: Example的主命令
-    usage: /ep help
+  multiserverchat: 
+    description: MultiServerChat的主命令
+    usage: /msc help
     aliases:
-    - ep
+    - msc
