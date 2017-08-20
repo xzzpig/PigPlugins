@@ -1,7 +1,6 @@
 package com.github.xzzpig.pigutilsplugin;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
@@ -54,7 +53,8 @@ public class Main extends JavaPlugin {
 	// 插件停用函数
 	@Override
 	public void onDisable() {
-		manager.getPluginStream().forEach(manager::unloadPlugin);
+		for (String plugin : manager.listPlugins())
+			manager.unloadPlugin(plugin);
 		getLogger().info(getName() + "插件已被停用 ");
 	}
 
@@ -73,7 +73,12 @@ public class Main extends JavaPlugin {
 		if (!dir.exists())
 			dir.mkdirs();
 		for (File file : dir.listFiles()) {
-			manager.loadPlugin(file);
+			try {
+				manager.loadPlugin(file);
+			} catch (Exception e) {
+				e.printStackTrace();
+				getLogger().warning("Plugin load failed|" + file);
+			}
 		}
 	}
 
@@ -85,14 +90,27 @@ public class Main extends JavaPlugin {
 		manager.register(new ScriptPluginLoader());
 		if (this.getClassLoader() instanceof URLClassLoader)
 			ScriptPluginLoader.Classloader4ScriptManager.addParents((URLClassLoader) this.getClassLoader());
+		for (String str : pluginConfig.getStringList("classPath")) {
+			try {
+				ScriptPluginLoader.Classloader4ScriptManager.addURLs(new URL(str));
+			} catch (Exception e) {
+				try {
+					File f = new File(str);
+					if (f.exists())
+						ScriptPluginLoader.Classloader4ScriptManager.addURLs(f.toURI().toURL());
+				} catch (Exception e2) {
+				}
+			}
+		}
 		File dir = new File(getDataFolder(), pluginConfig.getString("localDir"));
 		if (!dir.exists())
 			dir.mkdirs();
 		for (File file : dir.listFiles()) {
 			try {
 				manager.loadPlugin(file.toURI().toURL());
-			} catch (MalformedURLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
+				getLogger().warning("Plugin load failed|" + file);
 			}
 		}
 		List<String> urls = pluginConfig.getStringList("URLPlugin.urls");
@@ -103,8 +121,9 @@ public class Main extends JavaPlugin {
 			try {
 				u = new URL(url);
 				manager.loadPlugin(u);
-			} catch (MalformedURLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
+				getLogger().warning("Plugin load failed|" + url);
 			}
 		}
 	}

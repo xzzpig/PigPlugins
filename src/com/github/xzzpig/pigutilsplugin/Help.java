@@ -24,8 +24,6 @@ public class Help {
 
 	public static boolean list(CommandInstance cmd) {
 		cmd.sendMsg("插件列表:");
-		System.err.println(Main.instance);
-		System.err.println(Main.instance.manager);
 		for (String plugin : Main.instance.manager.listPlugins()) {
 			cmd.sender.sendMessage("  " + plugin);
 		}

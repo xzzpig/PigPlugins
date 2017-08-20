@@ -4,6 +4,8 @@ JavaPlugin:
 ScriptPlugin:
   enable: true
   localDir: ScirptPlugin
+  classPath: [
+    ]
   URLPlugin:
     urls: [
       ]
