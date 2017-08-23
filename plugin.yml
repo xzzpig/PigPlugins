@@ -1,12 +1,38 @@
-name: Example
-main: com.github.xzzpig.example.Main
+name: AreaAPI
+main: com.github.xzzpig.areaapi.Main
 version: V0.1
 author: xzzpig
-depend:
-- PigAPI
 commands:
-  example: 
-    description: Example的主命令
-    usage: /ep help
+  AreaAPI:
+    description: AreaAPI的主命令
+    usage: /aa help
     aliases:
-    - ep
+    - aa
+permissions:
+  areaapi.command.listall:
+    default: op
+    description: /aa listall 命令权限
+  areaapi.command.list:
+    default: op
+    description: /aa list 命令权限
+  areaapi.command.create:
+    default: op
+    description: /aa create 命令权限
+  areaapi.command.delete:
+    default: op
+    description: /aa delete 命令权限
+  areaapi.command.data:
+    default: op
+    description: /aa data 命令权限
+  areaapi.command.select:
+    default: op
+    description: /aa select 命令权限
+  areaapi.command.add:
+    default: op
+    description: /aa add 命令权限
+  areaapi.command.exclude:
+    default: op
+    description: /aa exclude 命令权限
+  areaapi.toolselect: 
+    default: op
+    description: 使用Tool选择区域的权限

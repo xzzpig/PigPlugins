@@ -1,2 +1,5 @@
 /bin/
 /target/
+/gradle/
+/gradlew
+/gradlew.bat
