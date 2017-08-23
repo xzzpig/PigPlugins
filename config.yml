@@ -10,4 +10,9 @@ mulitserverchat:
     worldalias:
       world: Main World
       DIM1: Hill
-  authkey: "setbyyourself"
+  authkey: setbyyourself
+  chatfilter:
+    accept:
+    - -1
+    deny: [
+      ]

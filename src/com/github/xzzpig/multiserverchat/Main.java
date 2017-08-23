@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,6 +42,7 @@ public class Main extends JavaPlugin {
 		static String chatconfig_format;
 		static Map<String, String> chatconfig_worldalias;
 		static String authkey;
+		static List<Integer> chatfilter_accept, chatfilter_deny;
 	}
 
 	public static Main instance;
@@ -105,7 +107,35 @@ public class Main extends JavaPlugin {
 			if (!event.getPackage().getType().equals("ServerChatPackage"))
 				return;
 			JSONObject json = new JSONObject(event.getPackage().getStringData());
-			getServer().broadcastMessage(json.getString("msg"));
+			if (!json.optString("type").equalsIgnoreCase("ChatMsg"))
+				return;
+			int serverID = json.getInt("serverID");
+			if ((serverID == Config.serverinfo_id) || (Config.chatfilter_accept.contains(serverID))
+					|| (Config.chatfilter_accept.contains(-1) && !Config.chatfilter_deny.contains(serverID))) {
+				getServer().broadcastMessage(json.getString("msg"));
+			}
+		}
+
+		@EventHandler
+		public void onServerChatJoinPackage(PackageSocketPackageEvent event) {
+			if (!event.getPackage().getType().equals("ServerChatPackage"))
+				return;
+			JSONObject json = new JSONObject(event.getPackage().getStringData());
+			if (!json.optString("type").equalsIgnoreCase("PlayerJoinMulti"))
+				return;
+			String player = json.optString("player");
+			mulitChatPlayers.add(player);
+		}
+
+		@EventHandler
+		public void onServerChatExitPackage(PackageSocketPackageEvent event) {
+			if (!event.getPackage().getType().equals("ServerChatPackage"))
+				return;
+			JSONObject json = new JSONObject(event.getPackage().getStringData());
+			if (!json.optString("type").equalsIgnoreCase("PlayerExitMulti"))
+				return;
+			String player = json.optString("player");
+			mulitChatPlayers.remove(player);
 		}
 	}
 
@@ -122,11 +152,11 @@ public class Main extends JavaPlugin {
 			String player = event.getPlayer().getName();
 			if (event.getMessage().equals("*")) {
 				if (mulitChatPlayers.contains(player)) {
-					mulitChatPlayers.remove(player);
+					exitPlayer(player);
 					event.getPlayer().sendMessage("[" + getName() + "]你已退出跨服聊天频道,输入*重新进入");
 					getLogger().info(player + "已退出跨服聊天频道");
 				} else {
-					mulitChatPlayers.add(player);
+					joinPlayer(player);
 					getLogger().info(player + "已进入跨服聊天频道");
 					event.getPlayer().sendMessage("[" + getName() + "]你已进入跨服聊天频道,输入*退出");
 				}
@@ -145,6 +175,7 @@ public class Main extends JavaPlugin {
 					.replace("%World%", Config.chatconfig_worldalias.get(event.getPlayer().getWorld().getName()))
 					.replace("%ServerName%", Config.serverinfo_name).replace('&', ChatColor.COLOR_CHAR);
 			chatObj.set("msg", msg);
+			chatObj.set("type", "ChatMsg");
 			client.send(new Package("ServerChatPackage", chatObj.toString()));
 		}
 	}
@@ -163,6 +194,8 @@ public class Main extends JavaPlugin {
 					config.getString("mulitserverchat.chatconfig.worldalias." + w.getName(), w.getName()));
 		}
 		Config.authkey = config.getString("mulitserverchat.authkey");
+		Config.chatfilter_accept = config.getIntegerList("chatfilter.accept");
+		Config.chatfilter_deny = config.getIntegerList("chatfilter.deny");
 	}
 
 	// 插件停用函数
@@ -178,5 +211,37 @@ public class Main extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		return Help.MultiServerChat.runCommand(Help.MultiServerChat.new CommandInstance(sender, command, label, args));
+	}
+
+	@SuppressWarnings("deprecation")
+	public void joinPlayer(String player) {
+		if (player.equalsIgnoreCase("*")) {
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				joinPlayer(p.getName());
+			}
+			return;
+		}
+		mulitChatPlayers.add(player);
+		JSONObject chatObj = new JSONObject();
+		chatObj.put("serverID", Config.serverinfo_id);
+		chatObj.set("type", "PlayerJoinMulti");
+		chatObj.set("player", player);
+		client.send(new Package("ServerChatPackage", chatObj.toString()));
+	}
+
+	@SuppressWarnings("deprecation")
+	public void exitPlayer(String player) {
+		if (player.equalsIgnoreCase("*")) {
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				exitPlayer(p.getName());
+			}
+			return;
+		}
+		mulitChatPlayers.remove(player);
+		JSONObject chatObj = new JSONObject();
+		chatObj.put("serverID", Config.serverinfo_id);
+		chatObj.set("type", "PlayerExitMulti");
+		chatObj.set("player", player);
+		client.send(new Package("ServerChatPackage", chatObj.toString()));
 	}
 }
