@@ -1,6 +1,8 @@
 package com.github.xzzpig.multiserverchat;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.xzzpig.pigutils.event.EventHandler;
 import com.github.xzzpig.pigutils.event.Listener;
+import com.github.xzzpig.pigutils.file.ExtendFile;
 import com.github.xzzpig.pigutils.json.JSONObject;
 import com.github.xzzpig.pigutils.pack.Package;
 import com.github.xzzpig.pigutils.pack.socket.eventdrive.EDPackageSocketClient;
@@ -102,6 +105,7 @@ public class Main extends JavaPlugin {
 			}, 10000);
 		}
 
+		@SuppressWarnings("deprecation")
 		@EventHandler
 		public void onServerChatPackage(PackageSocketPackageEvent event) {
 			if (!event.getPackage().getType().equals("ServerChatPackage"))
@@ -110,9 +114,15 @@ public class Main extends JavaPlugin {
 			if (!json.optString("type").equalsIgnoreCase("ChatMsg"))
 				return;
 			int serverID = json.getInt("serverID");
+			String msg = json.getString("msg");
 			if ((serverID == Config.serverinfo_id) || (Config.chatfilter_accept.contains(serverID))
 					|| (Config.chatfilter_accept.contains(-1) && !Config.chatfilter_deny.contains(serverID))) {
-				getServer().broadcastMessage(json.getString("msg"));
+				System.out.println(msg);
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (!shiledMap.containsKey(p.getName())
+							|| (!shiledMap.get(p.getName()).contains(json.optString("player"))))
+						p.sendMessage(msg);
+				}
 			}
 		}
 
@@ -137,9 +147,54 @@ public class Main extends JavaPlugin {
 			String player = json.optString("player");
 			mulitChatPlayers.remove(player);
 		}
+
+		@EventHandler
+		public void onServerChatShieldPackage(PackageSocketPackageEvent event) {
+			if (!event.getPackage().getType().equals("ServerChatPackage"))
+				return;
+			JSONObject json = new JSONObject(event.getPackage().getStringData());
+			if (!json.optString("type").equalsIgnoreCase("PlayerShiledPlayer"))
+				return;
+			String player = json.optString("player");
+			String target = json.optString("target");
+			if (!shiledMap.containsKey(player))
+				shiledMap.put(player, new ArrayList<>());
+			shiledMap.get(player).add(target);
+		}
+
+		@EventHandler
+		public void onServerChatUnShieldPackage(PackageSocketPackageEvent event) {
+			if (!event.getPackage().getType().equals("ServerChatPackage"))
+				return;
+			JSONObject json = new JSONObject(event.getPackage().getStringData());
+			if (!json.optString("type").equalsIgnoreCase("PlayerUnShiledPlayer"))
+				return;
+			String player = json.optString("player");
+			String target = json.optString("target");
+			if (!shiledMap.containsKey(player))
+				return;
+			if (target.equals("*"))
+				shiledMap.get(player).clear();
+			else
+				shiledMap.get(player).remove(target);
+		}
+
+		@EventHandler
+		public void onServerChatMutePackage(PackageSocketPackageEvent event) {
+			if (!event.getPackage().getType().equals("ServerChatPackage"))
+				return;
+			JSONObject json = new JSONObject(event.getPackage().getStringData());
+			if (!json.optString("type").equalsIgnoreCase("PlayerMute"))
+				return;
+			String player = json.optString("player");
+			long time = json.optLong("time");
+			muteMap.put(player, time);
+		}
 	}
 
 	public List<String> mulitChatPlayers = new ArrayList<>();
+	public Map<String, List<String>> shiledMap = new HashMap<>();
+	public Map<String, Long> muteMap = new HashMap<>();
 
 	ChatListener chatListener;
 	ClientListener clientListener;
@@ -165,6 +220,20 @@ public class Main extends JavaPlugin {
 			}
 			if (!mulitChatPlayers.contains(event.getPlayer().getName()))
 				return;
+			if (muteMap.containsKey(player)) {
+				long time = muteMap.get(player);
+				if (time == -1 || time > System.currentTimeMillis()) {
+					if (time != -1)
+						event.getPlayer().sendMessage("[MultiServerChat]你已被禁止跨服聊天至"
+								+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(time)));
+					else {
+						event.getPlayer().sendMessage("[MultiServerChat]你已被永久禁止跨服聊天(op可解禁)");
+					}
+					return;
+				} else {
+					muteMap.remove(player);
+				}
+			}
 			event.setCancelled(true);
 			JSONObject chatObj = new JSONObject();
 			chatObj.put("serverID", Config.serverinfo_id);
@@ -176,10 +245,12 @@ public class Main extends JavaPlugin {
 					.replace("%ServerName%", Config.serverinfo_name).replace('&', ChatColor.COLOR_CHAR);
 			chatObj.set("msg", msg);
 			chatObj.set("type", "ChatMsg");
+			chatObj.set("player", player);
 			client.send(new Package("ServerChatPackage", chatObj.toString()));
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initConfig() {
 		config = this.getConfig();
 		Config.pigmcnetcenter_ip = config.getString("mulitserverchat.pigmcnetcenter.ip", "localhost");
@@ -196,6 +267,9 @@ public class Main extends JavaPlugin {
 		Config.authkey = config.getString("mulitserverchat.authkey");
 		Config.chatfilter_accept = config.getIntegerList("chatfilter.accept");
 		Config.chatfilter_deny = config.getIntegerList("chatfilter.deny");
+		ExtendFile muteFile = new ExtendFile(getDataFolder(), "mute.obj");
+		if (muteFile.exists())
+			muteMap = (Map<String, Long>) muteFile.readObject();
 	}
 
 	// 插件停用函数
@@ -205,6 +279,8 @@ public class Main extends JavaPlugin {
 			client.unregListener(clientListener);
 			client.stop();
 		}
+		ExtendFile muteFile = new ExtendFile(getDataFolder(), "mute.obj");
+		muteFile.writeObject(muteMap);
 		getLogger().info(getName() + "插件已被停用 ");
 	}
 
@@ -242,6 +318,30 @@ public class Main extends JavaPlugin {
 		chatObj.put("serverID", Config.serverinfo_id);
 		chatObj.set("type", "PlayerExitMulti");
 		chatObj.set("player", player);
+		client.send(new Package("ServerChatPackage", chatObj.toString()));
+	}
+
+	public void shiledPlayer(String player, String target) {
+		JSONObject chatObj = new JSONObject();
+		chatObj.set("type", "PlayerShiledPlayer");
+		chatObj.set("player", player);
+		chatObj.set("target", target);
+		client.send(new Package("ServerChatPackage", chatObj.toString()));
+	}
+
+	public void unshiledPlayer(String player, String target) {
+		JSONObject chatObj = new JSONObject();
+		chatObj.set("type", "PlayerUnShiledPlayer");
+		chatObj.set("player", player);
+		chatObj.set("target", target);
+		client.send(new Package("ServerChatPackage", chatObj.toString()));
+	}
+
+	public void mutePlayer(String player, long time) {
+		JSONObject chatObj = new JSONObject();
+		chatObj.set("type", "PlayerMute");
+		chatObj.set("player", player);
+		chatObj.set("time", time);
 		client.send(new Package("ServerChatPackage", chatObj.toString()));
 	}
 }
