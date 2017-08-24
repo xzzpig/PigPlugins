@@ -11,7 +11,7 @@ import com.github.xzzpig.areaapi.TCommandHelp.CommandInstance;
 
 public class Help {
 
-	public static TCommandHelp AreaAPI = new TCommandHelp("areaapi", "PigAPI的主命令", "/aa help");
+	public static TCommandHelp AreaAPI = new TCommandHelp("AreaAPI", "PigAPI的主命令", "/aa help");
 	public static TCommandHelp AreaAPI_Add = AreaAPI
 			.addSubCommandHelp("add", "将记录点0和记录点1间的区域加入到Area[name]中", null, "[name]")
 			.setPermission("areaapi.command.add").addLimit(cmd -> limitArgsLength(cmd, 2)).setCommandRunner(Help::add);

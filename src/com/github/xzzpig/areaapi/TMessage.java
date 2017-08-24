@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -64,6 +65,9 @@ public class TMessage {
 
 	private static String version = null;
 
+	public static String ClassName_ChatSerializer, Field_playerConnection = "playerConnection",
+			Method_sendPack = "sendPacket", Method_a = "a", ClassName_PacketPlayOutChat;
+
 	static {
 		for (int a = 1; a <= 8; a++) {
 			for (int b = 1; b <= 9; b++) {
@@ -72,6 +76,18 @@ public class TMessage {
 					Class.forName("org.bukkit.craftbukkit." + testversion + ".entity.CraftPlayer");
 					version = testversion;
 					System.out.println("MC版本为" + version + ",FM将以TellRaw方式发送");
+					try {
+						Class.forName("cpw.mods.fml.common.Mod");
+						System.out.println("尝试添加Cauldron支持");
+						ClassName_ChatSerializer = "net.minecraft.util.IChatComponent$Serializer";
+						Field_playerConnection = "field_71135_a";
+						Method_sendPack = "func_147359_a";
+						Method_a = "func_150699_a";
+						ClassName_PacketPlayOutChat = "net.minecraft.network.play.server.S02PacketChat";
+					} catch (Exception e) {
+						ClassName_ChatSerializer = "net.minecraft.server." + version + ".ChatSerializer";
+						ClassName_PacketPlayOutChat = "net.minecraft.server." + version + ".PacketPlayOutChat";
+					}
 					break;
 				} catch (Exception e) {
 				}
@@ -250,19 +266,18 @@ public class TMessage {
 		try {
 			Object EntityPlayer = Class.forName("org.bukkit.craftbukkit." + version + ".entity.CraftPlayer")
 					.getMethod("getHandle").invoke(player);
-			Object playerConnection = EntityPlayer.getClass().getField("playerConnection").get(EntityPlayer);
-			Object IChatBaseComponent = Class.forName("net.minecraft.server." + version + ".ChatSerializer")
-					.getMethod("a", String.class).invoke(null, toJSONString());
-			Class<?> cls = Class.forName("net.minecraft.server." + version + ".PacketPlayOutChat");
-			Class<?>[] paramTypes = { Class.forName("net.minecraft.server." + version + ".IChatBaseComponent") };
+			Object playerConnection = EntityPlayer.getClass().getField(Field_playerConnection).get(EntityPlayer);
+			Object IChatBaseComponent = Class.forName(ClassName_ChatSerializer).getMethod(Method_a, String.class)
+					.invoke(null, toJSONString());
+			Class<?> cls = Class.forName(ClassName_PacketPlayOutChat);
 			Object[] params = { IChatBaseComponent }; // 方法传入的参数
 
-			Constructor<?> con = cls.getConstructor(paramTypes); // 主要就是这句了
-			Object PacketPlayOutChat = con.newInstance(params); // BatcherBase
-																// 为自定义类
+			Constructor<?> constructor = Arrays.asList(cls.getConstructors()).stream()
+					.filter(cons -> cons.getParameterCount() == 1).findAny().get(); // 主要就是这句了
+			Object PacketPlayOutChat = constructor.newInstance(params); // BatcherBase
 			Method sendPack = null;
 			for (Method meth : playerConnection.getClass().getMethods()) {
-				if (meth.getName().equalsIgnoreCase("sendPacket"))
+				if (meth.getName().equalsIgnoreCase(Method_sendPack))
 					sendPack = meth;
 			}
 			sendPack.invoke(playerConnection, PacketPlayOutChat);

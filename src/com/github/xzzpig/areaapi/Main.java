@@ -1,6 +1,7 @@
 package com.github.xzzpig.areaapi;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -48,5 +49,10 @@ public class Main extends JavaPlugin {
 		saveDefaultConfig();
 		loadConfig();
 		getServer().getPluginManager().registerEvents(BukkitListener.instance, this);
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		return Help.AreaAPI.getTabComplete("AreaAPI", sender, command, alias, args);
 	}
 }

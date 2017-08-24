@@ -74,6 +74,7 @@ public class TCommandHelp {
 		}
 		return basichelp;
 	}
+
 	private String command, describe, useage, var;
 
 	private CommandRunner commandRunner;
@@ -239,7 +240,7 @@ public class TCommandHelp {
 			if (commandRunner == null || commandRunner.run(ci) == false) {
 				if (this.getSubCommandHelps().length != 0)
 					for (TCommandHelp sub2 : this.getSubCommandHelps()) {
-						sub2.getHelpMessage(ci.command.getLabel()).send(ci.sender);
+						sub2.getHelpMessage(sub2.getFinalUpHelp().getCommand()).send(ci.sender);
 					}
 				else
 					this.getHelpMessage(ci.command.getLabel()).send(ci.sender);
