@@ -265,8 +265,8 @@ public class Main extends JavaPlugin {
 					config.getString("mulitserverchat.chatconfig.worldalias." + w.getName(), w.getName()));
 		}
 		Config.authkey = config.getString("mulitserverchat.authkey");
-		Config.chatfilter_accept = config.getIntegerList("chatfilter.accept");
-		Config.chatfilter_deny = config.getIntegerList("chatfilter.deny");
+		Config.chatfilter_accept = (List<Integer>) config.get("mulitserverchat.chatfilter.accept");
+		Config.chatfilter_deny = (List<Integer>) config.get("mulitserverchat.chatfilter.deny");
 		ExtendFile muteFile = new ExtendFile(getDataFolder(), "mute.obj");
 		if (muteFile.exists())
 			muteMap = (Map<String, Long>) muteFile.readObject();
