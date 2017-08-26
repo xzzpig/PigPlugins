@@ -191,7 +191,7 @@ public class Area {
 	public boolean in(Location loc) {
 		if (excludeSpaceList.stream().anyMatch(s -> s.in(loc)))
 			return false;
-		if (spaceList.stream().allMatch(s -> s.in(loc)))
+		if (spaceList.stream().anyMatch(s -> s.in(loc)))
 			return true;
 		return false;
 	}
@@ -258,5 +258,10 @@ public class Area {
 		JSONArray spaces = new JSONArray();
 		spaceList.stream().map(Space::toJSONObject).forEach(spaces::put);
 		data.put("spaces", spaces);
+	}
+
+	@Override
+	public String toString() {
+		return "Area{" + name + "}";
 	}
 }

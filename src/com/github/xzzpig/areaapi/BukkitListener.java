@@ -53,7 +53,7 @@ public class BukkitListener implements Listener {
 
 	@SuppressWarnings("unchecked")
 	@EventHandler
-	public void onAreaIn(PlayerMoveEvent event) {
+	public void onAreaInOut(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		AreaAPI.allAreaStream().map(AreaAPI::getArea).filter(area -> area.in(player.getLocation()))
 				.filter(area -> ((!area.tmpMap.containsKey("inPlayerList"))
