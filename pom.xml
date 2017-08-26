@@ -32,10 +32,5 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<dependency>
-			<groupId>com.github.xzzpig</groupId>
-			<artifactId>PigUtils</artifactId>
-			<version>v1.1</version>
-		</dependency>
 	</dependencies>
 </project>
