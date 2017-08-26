@@ -52,6 +52,15 @@ public class TCommandHelp {
 		public boolean run(CommandInstance instance);
 	}
 
+	public static final CommandLimit isPlayer = ci -> {
+		if (ci.sender instanceof Player)
+			return null;
+		else {
+			return new TMessage("[" + ci.label + "]").then("此命令").color(ChatColor.GRAY).style(ChatColor.UNDERLINE)
+					.tooltip(ci.toString()).then("只能有玩家执行");
+		}
+	};
+
 	public static TCommandHelp valueOf(TCommandHelp basichelp, String command) {
 		String[] cmds = command.split(" ");
 		for (int i = cmds.length - 1; i >= 0; i--) {
@@ -67,6 +76,7 @@ public class TCommandHelp {
 	}
 
 	private String command, describe, useage, var;
+
 	private CommandRunner commandRunner;
 
 	private List<CommandLimit> limits = new ArrayList<>();
@@ -74,15 +84,6 @@ public class TCommandHelp {
 	private List<TCommandHelp> subs = new ArrayList<TCommandHelp>();
 
 	private TCommandHelp uphelp;
-
-	public static final CommandLimit isPlayer = ci -> {
-		if (ci.sender instanceof Player)
-			return null;
-		else {
-			return new TMessage("[" + ci.label + "]").then("此命令").color(ChatColor.GRAY).style(ChatColor.UNDERLINE)
-					.tooltip(ci.toString()).then("只能有玩家执行");
-		}
-	};
 
 	public TCommandHelp(String command, String describe, String useage) {
 		this.command = command;
@@ -239,7 +240,7 @@ public class TCommandHelp {
 			if (commandRunner == null || commandRunner.run(ci) == false) {
 				if (this.getSubCommandHelps().length != 0)
 					for (TCommandHelp sub2 : this.getSubCommandHelps()) {
-						sub2.getHelpMessage(ci.command.getLabel()).send(ci.sender);
+						sub2.getHelpMessage(sub2.getFinalUpHelp().getCommand()).send(ci.sender);
 					}
 				else
 					this.getHelpMessage(ci.command.getLabel()).send(ci.sender);
