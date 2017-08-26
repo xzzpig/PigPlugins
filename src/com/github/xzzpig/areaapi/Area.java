@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,6 +18,8 @@ import com.github.xzzpig.pigutils.json.JSONObject;
 import com.github.xzzpig.pigutils.json.JSONTokener;
 
 public class Area {
+
+	public final Map<Object, Object> tmpMap = new HashMap<>();
 
 	public static class Space {
 

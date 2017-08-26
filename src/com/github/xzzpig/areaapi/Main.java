@@ -8,8 +8,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.xzzpig.pigutils.annoiation.Const;
+
 public class Main extends JavaPlugin {
 
+	@Const(constField = true, constReference = true)
 	private static Main instance;
 
 	public static Main getInstance() {
@@ -54,5 +57,10 @@ public class Main extends JavaPlugin {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		return Help.AreaAPI.getTabComplete("AreaAPI", sender, command, alias, args);
+	}
+
+	public void reload() {
+		getServer().getPluginManager().disablePlugin(this);
+		getServer().getPluginManager().enablePlugin(this);
 	}
 }

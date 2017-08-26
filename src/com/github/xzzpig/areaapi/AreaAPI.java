@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import org.bukkit.Location;
 
 public class AreaAPI {
-	private static final List<Area> areas = new LinkedList<>();
+	static final List<Area> areas = new LinkedList<>();
 
 	static final Map<String, Location> playerSelectedLocMap = new HashMap<>();
 
@@ -85,5 +85,14 @@ public class AreaAPI {
 
 	public static void setPlayerSelectedLoc(String player, int id, Location loc) {
 		playerSelectedLocMap.put(player + "_" + id, loc);
+	}
+
+	public static void reload(String area) {
+		if (area == null || area.equals(""))
+			Main.getInstance().reload();
+		else {
+			AreaAPI.areas.removeIf(a -> a.name.equalsIgnoreCase(area));
+			AreaAPI.getArea(area);
+		}
 	}
 }

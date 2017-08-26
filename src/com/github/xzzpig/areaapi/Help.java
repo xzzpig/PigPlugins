@@ -35,6 +35,8 @@ public class Help {
 	public static TCommandHelp AreaAPI_Select = AreaAPI.addSubCommandHelp("select", "选择当前所在位置为记录点[num]", null, "[num]")
 			.setPermission("areaapi.command.select").addLimit(cmd -> limitArgsLength(cmd, 2))
 			.setCommandRunner(Help::select).addLimit(TCommandHelp.isPlayer);
+	public static TCommandHelp AreaAPI_Reload = AreaAPI.addSubCommandHelp("reload", "重载Area", "[area]为空时重载插件", "[area]")
+			.setPermission("areaapi.command.reload").setCommandRunner(Help::reload);
 
 	public static boolean add(CommandInstance cmd) {
 		Location loc0 = com.github.xzzpig.areaapi.AreaAPI.getPlayerSelectedLoc(cmd.sender.getName(), 0);
@@ -130,6 +132,17 @@ public class Help {
 	public static boolean listall(CommandInstance cmd) {
 		cmd.sendMsg("&3所有Area列表:");
 		com.github.xzzpig.areaapi.AreaAPI.allAreaStream().forEach(cmd.sender::sendMessage);
+		return true;
+	}
+
+	public static boolean reload(CommandInstance cmd) {
+		String area = "";
+		try {
+			area = cmd.args[1];
+		} catch (Exception e) {
+		}
+		cmd.sendMsg("正在重载Area " + area);
+		com.github.xzzpig.areaapi.AreaAPI.reload(area);
 		return true;
 	}
 
