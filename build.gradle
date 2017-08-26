@@ -18,6 +18,6 @@ repositories {
      maven { url "http://repo.maven.apache.org/maven2" }
 }
 dependencies {
-    compile 'com.github.xzzpig:PigUtils:d11c9d780f'
+    //compile 'com.github.xzzpig:PigUtils:d11c9d780f'
     //compile group: 'com.github.xzzpig.PigSubUtils', name: 'Json', version:'cfbd4ddd44'
 }
