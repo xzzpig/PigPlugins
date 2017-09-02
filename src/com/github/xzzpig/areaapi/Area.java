@@ -180,6 +180,28 @@ public class Area {
 		return data;
 	}
 
+	HashMap<String, JSONObject> extentions;
+
+	public JSONObject getExtentionData(String name) {
+		name = name.toLowerCase();
+		if (extentions == null)
+			extentions = new HashMap<>();
+		if (extentions.containsKey(name))
+			return extentions.get(name);
+		JSONObject exdata = null;
+		exdata = getData().optJSONObject(name);
+		if (exdata == null)
+			exdata = new JSONObject();
+		if (!exdata.has("enabled"))
+			exdata.put("enabled", false);
+		extentions.put(name, exdata);
+		return exdata;
+	}
+
+	public JSONObject getExtentionData(String name, String describe) {
+		return getExtentionData(name).put("describe", describe);
+	}
+
 	public File getDataDir() {
 		return new File(Main.getInstance().getDataFolder(), name);
 	}
@@ -245,7 +267,12 @@ public class Area {
 	public void saveData() throws IOException {
 		saveSpaceList();
 		saveExcludeSpaceList();
+		saveExtentionDatas();
 		data.saveToFile(getDataFile());
+	}
+
+	private void saveExtentionDatas() {
+		extentions.forEach((key, exdata) -> data.put(key, exdata));
 	}
 
 	private void saveExcludeSpaceList() {
