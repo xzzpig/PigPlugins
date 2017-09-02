@@ -12,6 +12,10 @@ import java.util.stream.Stream;
 
 import org.bukkit.Location;
 
+import com.github.xzzpig.areaapi.event.AreaDeleteEvent;
+import com.github.xzzpig.areaapi.event.AreaLoadEvent;
+import com.github.xzzpig.pigutils.event.Event;
+
 public class AreaAPI {
 	static final List<Area> areas = new LinkedList<>();
 
@@ -30,12 +34,20 @@ public class AreaAPI {
 	}
 
 	public static boolean deleteArea(String name) {
+		AreaDeleteEvent event = new AreaDeleteEvent(getArea(name));
+		Event.callEvent(event);
+		if (event.isCanceled()) {
+			Main.getInstance().getLogger().info("Area(" + name + ")删除失败(被AreaDeleteEvent取消)");
+			return false;
+		}
 		File dataDir = new File(Main.getInstance().getDataFolder(), name);
 		if (deleteDir(dataDir)) {
 			areas.removeAll(areas.stream().filter(area -> area.name.equalsIgnoreCase(name)).collect(ArrayList::new,
 					ArrayList::add, ArrayList::addAll));
+			Main.getInstance().getLogger().info("Area(" + name + ")删除成功");
 			return true;
 		}
+		Main.getInstance().getLogger().info("Area(" + name + ")删除失败");
 		return false;
 	}
 
@@ -46,8 +58,10 @@ public class AreaAPI {
 				deleted = deleteDir(dir);
 			else
 				deleted = sub.delete();
-			if (!deleted)
+			if (!deleted) {
+				Main.getInstance().getLogger().warning("删除Area时文件" + sub.getAbsolutePath() + "删除失败");
 				return false;
+			}
 		}
 		return dir.delete();
 	}
@@ -57,8 +71,12 @@ public class AreaAPI {
 		if (oarea.isPresent())
 			return oarea.get();
 		Area area = new Area(name);
-		areas.add(area);
-		Main.getInstance().getLogger().info("Area(" + name + ")已加载");
+		AreaLoadEvent event = new AreaLoadEvent(area);
+		Event.callEvent(event);
+		if (!event.isCanceled()) {
+			areas.add(area);
+			Main.getInstance().getLogger().info("Area(" + name + ")已加载");
+		}
 		return area;
 	}
 
