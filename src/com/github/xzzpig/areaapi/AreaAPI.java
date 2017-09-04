@@ -70,6 +70,7 @@ public class AreaAPI {
 		Optional<Area> oarea = areas.stream().filter(area -> area.name.equalsIgnoreCase(name)).findAny();
 		if (oarea.isPresent())
 			return oarea.get();
+		Main.getInstance().getLogger().info("开始加载Area(" + name + ")");
 		Area area = new Area(name);
 		AreaLoadEvent event = new AreaLoadEvent(area);
 		Event.callEvent(event);

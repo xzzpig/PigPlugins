@@ -245,8 +245,7 @@ public class Area {
 	}
 
 	private void loadExcludeSpaceList() {
-		if (excludeSpaceList == null)
-			excludeSpaceList = new ArrayList<>();
+		excludeSpaceList = new ArrayList<>();
 		JSONArray spaces = data.optJSONArray("excludes");
 		if (spaces == null)
 			return;
@@ -255,8 +254,7 @@ public class Area {
 	}
 
 	private void loadSpaceList() {
-		if (spaceList == null)
-			spaceList = new ArrayList<>();
+		spaceList = new ArrayList<>();
 		JSONArray spaces = data.optJSONArray("spaces");
 		if (spaces == null)
 			return;
